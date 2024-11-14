@@ -6,143 +6,91 @@ use TLC\Application\Database;
 /**
  * Policyholder Model
  */
-class Policyholder
+class Coverage
 {
-    private int $policyHolderID;
-    private string $firstName;
-    private string $lastName;
-    private string $streetName;
-    private string $city;
-    private string $state;
-    private int $zip;
+    private int $coverageID;
+    private string $type;
+    private int $limit;
+    private int $deductible;
 
     public function __construct()
     {
-        $this->policyHolderID = 0;
-        $this->firstName = '';
-        $this->lastName = '';
-        $this->city = '';
-        $this->state = '';
-        $this->zip = 0;
+        $this->coverageID = 0;
+        $this->type = '';
+        $this->limit = '';
+        $this->deductible = '';
     }
-    public function getpolicyHolderID(): int
+    public function getcoverageID(): int
     {
-        return $this->id;
+        return $this->coverageID;
     }
 
     /**
-     * Set the value of Id
-     * @param int $Id
+     * Set the value of coverageID
+     * @param int $coverageID
      * @return self
      */
-    public function setpolicyHolderID(int $policyHolderID): self
+    public function setcoverageID(int $coverageID): self
     {
-        $this->policyHolderID = $policyHolderID;
+        $this->coverageID = $coverageID;
         return $this;
     }
 
-    public function getfirstName(): string
+    public function gettype(): string
     {
-        return $this->firstName;
+        return $this->type;
     }
 
     /**
-     * Set the value of firstName
-     * @param int $firstName
+     * Set the value of type
+     * @param int $type
      * @return self
      */
-    public function setfirstName(string $firstName): self
+    public function settype(int $type): self
     {
-        $this->firstName = $firstName;
+        $this->type = $type;
         return $this;
     }
 
-    public function getlastName(): string
+    public function getlimit(): int
     {
-        return $this->lastName;
+        return $this->limit;
     }
 
     /**
-     * Set the value of lastName
-     * @param int $lastName
+     * Set the value of limit
+     * @param int $limit
      * @return self
      */
-    public function setlastName(string $lastName): self
+    public function setlimit(int $limit): self
     {
-        $this->lastName = $lastName;
+        $this->limit = $limit;
         return $this;
     }
 
-    public function getstreetName(): string
+    public function getdeductible(): int
     {
-        return $this->streetName;
+        return $this->deductible;
     }
 
     /**
-     * Set the value of streetName
-     * @param int $streetName
+     * Set the value of deductible
+     * @param int $deductible
      * @return self
      */
-    public function setstreetName(string $streetName): self
+    public function setdeductible(string $deductible): self
     {
-        $this->streetName = $streetName;
+        $this->deductible = $deductible;
         return $this;
     }
 
-    public function getcity(): string
-    {
-        return $this->city;
-    }
-
-    /**
-     * Set the value of city
-     * @param int $city
-     * @return self
-     */
-    public function setcity(string $city): self
-    {
-        $this->city = $city;
-        return $this;
-    }
-
-    public function getstate(): string
-    {
-        return $this->state;
-    }
-
-    /**
-     * Set the value of state
-     * @param int $state
-     * @return self
-     */
-    public function setstate(string $state): self
-    {
-        $this->state = $state;
-        return $this;
-    }
-
-    public function getzip(): int
-    {
-        return $this->firstName;
-    }
-
-    /**
-     * Set the value of zip
-     * @param int $zip
-     * @return self
-     */
-    public function setzip(int $zip): self
-    {
-        $this->zip = $zip;
-        return $this;
-    }
-
+  
     public function save(): bool
     {
         if ($this->id == 0) {
-            return $this->savePolicyholder();
+            return $this->saveCoverage();
         } else {
-            return $this->updatePolicyholder();
+            return $this->updateCoverage();
         }
     }
 
@@ -150,20 +98,16 @@ class Policyholder
      * Insert the bank
      * @return bool
      */
-    private function savePolicyholder(): bool
+    private function saveCoverage(): bool
     {
         $con = new \MysqlClass();
-        $query = "INSERT INTO policyholder (firstName, lastName, streetName, city, state, zip,) VALUES (?, ?, ?);";
-        $con->pushParam($this->firstName);
-        $con->pushParam($this->lastName);
-        $con->pushParam($this->streetName);
-        $con->pushParam($this->city);
-        $con->pushParam($this->state);
-        $con->pushParam($this->zip);
+        $query = "INSERT INTO coverage (type, limit, deductible) VALUES (?, ?, ?);";
+        $con->pushParam($this->type);
+        $con->pushParam($this->limit);
+        $con->pushParam($this->deductible);
 
-
-        if ($con->executeNoneQuery_Safe($query) > 0) {
-            $this->id = $con->getLastInsertPolicyHolderID();
+        if ($con->executeNoneQuery($query) > 0) {
+            $this->coverageID = $con->getLastID();
             return true;
         }
 
@@ -171,72 +115,69 @@ class Policyholder
     }
 
     /**
-     * Update the policyholder
+     * Update the coverage
      * @return bool
      */
-    private function updatePolicyholder(): bool
+    private function updateCoverage(): bool
     {
         $con = new \MysqlClass();
-        $query = "UPDATE bank SET firstName = ?, lastName = ?, streetName = ?, city = ?, state = ?, zip = ?, WHERE policyholderID = ? AND Deleted = 0";
-        $con->pushParam($this->firstName);
-        $con->pushParam($this->lastName);
-        $con->pushParam($this->streetName);
-        $con->pushParam($this->city);
-        $con->pushParam($this->state);
-        $con->pushParam($this->zip);
-        $con->pushParam($this->policyholderID);
+        $query = "UPDATE coverage SET type = ?, limit = ?, deductible = ? WHERE coverageID = ? AND Deleted = 0";
+        $con->pushParam($this->type);
+        $con->pushParam($this->limit);
+        $con->pushParam($this->deductible);
+        $con->pushParam($this->coverageID);
 
-        return $con->executeNoneQuery_Safe($query) > 0;
+        return $con->executeNoneQuery($query) > 0;
     }
 
     /**
-     * Delete the policyholder
-     * @param int $policyHolderID
+     * Delete the coverage
+     * @param int $coverageIDID
      * @return bool
      */
-    public static function delete(int $policyHolderID): bool
+    public static function delete(int $covergaeID): bool
     {
         $con = new \MysqlClass();
-        $query = "UPDATE policyholder SET Deleted = 1 WHERE Id = ?";
-        $con->pushParam($id);
+        $query = "UPDATE coverage SET Deleted = 1 WHERE coverageID = ?";
+        $con->pushParam($coverageID);
 
-        return $con->executeNoneQuery_Safe($query) > 0;
+        return $con->executeNoneQuery($query) > 0;
     }
 
     /**
-     * Get the policyholder by policyholderID
-     * @param int $policyHolderID
-     * @return policyholder|null
+     * Get the coverage by coverageIDID
+     * @param int $coverageIDID
+     * @return coverage|null
      */
-    public static function getpolicyholderById(int $policyHolderID): ?policyholder
+    public static function getcoveragerBycoverageID(int $coverageID): ?policyholder
     {
         $con = new \MysqlClass();
-        $query = "SELECT * FROM policyholder WHERE Id = ? AND Deleted = 0 LIMIT 1";
-        $con->pushParam($id);
-        $result = $con->queryObject_Safe($query);
+        $query = "SELECT * FROM coverage WHERE coverageID = ? AND Deleted = 0 LIMIT 1";
+        $con->pushParam($coverageID);
+        $result = $con->queryObject($query);
 
         if ($result) {
-            return self::mapPolicyholder($result);
+            return self::mapCoverage($result);
         }
 
         return null;
     }
 
     /**
-     * Get all banks
+     * Get all coverages
      * @return array
      */
-    public static function getAllPolicyholders(): array
+    public static function getAllCoverages(): array
     {
         $con = new \MysqlClass();
-        $query = "SELECT * FROM policyholder WHERE Deleted = 0";
+        $query = "SELECT * FROM coverage WHERE Deleted = 0";
         $result = [];
 
-        $Policyholders = $con->queryAllObject_Safe($query);
+        $Coverages = $con->queryAllObject($query);
 
-        if ($Policyholders) {
-            foreach ($Policyholders as $row) {
-                $result[] = self::mapPolicyholder($row);
+        if ($Coverages) {
+            foreach ($Coverages as $row) {
+                $result[] = self::mapCoverage($row);
             }
         }
 
@@ -249,24 +190,21 @@ class Policyholder
      */
     public static function getDisplay(): array
     {
-        $banks = self::getAllPolicyholder();
+        $banks = self::getAllCoverage();
         $result = [];
 
-        foreach ($Policyholders as $Policyholder) {
-            $result[] = ["policyholderID" => $Policyholder->getpolicyHolderID(), "name" => $bank->getfirstame()];
+        foreach ($Coverages as $Coverage) {
+            $result[] = ["coverageID" => $Coverage->getcoverageID(), "name" => $coverage->gettype()];
         }
 
         return $result;
     }
 
-    private static function mapPolicyholder($Policyholder): Policyholder
+    private static function mapCoverage($Coverage): Coverage
     {
         return (new self())
-            ->setpolicyHolderID($Policyholder->Id)
-            ->setfirstName($Policyholder->firstName)
-            ->setlastName($Policyholder->lastName)
-            ->setstreetName($Policyholder->streetName)
-            ->setcity($Policyholder->city)
-            ->setstate($Policyholder->state)
-            ->setzip($Policyholder->zip);
+            ->setcoverageID($Coverage->coverageID)
+            ->settype($Coverage->type)
+            ->setlimit($Coverage->limit)
+            ->setdeductible($Coverage->deductible);
     }

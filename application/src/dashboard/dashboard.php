@@ -1,7 +1,7 @@
 <?php
 
 // Controller
-use TLC\Application\Model\Policyholder;
+use 1_CAR4SURE\Application\Model\Policyholder;
 
-$policyholders = Policyholder::fetchAllPolicyholders();
-echo $twig->render('dashboard.twig', ['policyholders' => $policyholders]);
+$siteRoute->addContext("packageList", Policyholder::getAll());
+$siteRoute->render('dashboard.twig');

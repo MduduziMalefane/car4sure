@@ -9,13 +9,13 @@ use TLC\Application\Database;
 class Policytype
 {
     private int $policyTypeID;
-    private string $Description;
+    private string $description;
 
 
     public function __construct()
     {
         $this->policyTypeID = 0;
-        $this->Description = '';
+        $this->description = '';
 
     }
     public function getpolicyHolderID(): int
@@ -24,8 +24,8 @@ class Policytype
     }
 
     /**
-     * Set the value of Id
-     * @param int $Id
+     * Set the value of policyHolderID
+     * @param int $policyHolderID
      * @return self
      */
     public function setpolicyHolderID(int $policyHolderID): self
@@ -34,108 +34,27 @@ class Policytype
         return $this;
     }
 
-    public function getfirstName(): string
+    public function getdescription(): string
     {
-        return $this->firstName;
+        return $this->description;
     }
 
     /**
-     * Set the value of firstName
-     * @param int $firstName
+     * Set the value of description
+     * @param int $description
      * @return self
      */
-    public function setfirstName(string $firstName): self
+    public function setdescription(string $description): self
     {
-        $this->firstName = $firstName;
+        $this->description = $description;
         return $this;
     }
-
-    public function getlastName(): string
-    {
-        return $this->lastName;
-    }
-
-    /**
-     * Set the value of lastName
-     * @param int $lastName
-     * @return self
-     */
-    public function setlastName(string $lastName): self
-    {
-        $this->lastName = $lastName;
-        return $this;
-    }
-
-    public function getstreetName(): string
-    {
-        return $this->streetName;
-    }
-
-    /**
-     * Set the value of streetName
-     * @param int $streetName
-     * @return self
-     */
-    public function setstreetName(string $streetName): self
-    {
-        $this->streetName = $streetName;
-        return $this;
-    }
-
-    public function getcity(): string
-    {
-        return $this->city;
-    }
-
-    /**
-     * Set the value of city
-     * @param int $city
-     * @return self
-     */
-    public function setcity(string $city): self
-    {
-        $this->city = $city;
-        return $this;
-    }
-
-    public function getstate(): string
-    {
-        return $this->state;
-    }
-
-    /**
-     * Set the value of state
-     * @param int $state
-     * @return self
-     */
-    public function setstate(string $state): self
-    {
-        $this->state = $state;
-        return $this;
-    }
-
-    public function getzip(): int
-    {
-        return $this->firstName;
-    }
-
-    /**
-     * Set the value of zip
-     * @param int $zip
-     * @return self
-     */
-    public function setzip(int $zip): self
-    {
-        $this->zip = $zip;
-        return $this;
-    }
-
     public function save(): bool
     {
         if ($this->id == 0) {
-            return $this->savePolicyholder();
+            return $this->savePolicytype();
         } else {
-            return $this->updatePolicyholder();
+            return $this->updatePolicytype();
         }
     }
 
@@ -143,20 +62,14 @@ class Policytype
      * Insert the bank
      * @return bool
      */
-    private function savePolicyholder(): bool
+    private function savePolicytype(): bool
     {
         $con = new \MysqlClass();
-        $query = "INSERT INTO policyholder (firstName, lastName, streetName, city, state, zip,) VALUES (?, ?, ?);";
-        $con->pushParam($this->firstName);
-        $con->pushParam($this->lastName);
-        $con->pushParam($this->streetName);
-        $con->pushParam($this->city);
-        $con->pushParam($this->state);
-        $con->pushParam($this->zip);
-
-
-        if ($con->executeNoneQuery_Safe($query) > 0) {
-            $this->id = $con->getLastInsertPolicyHolderID();
+        $query = "INSERT INTO policytype (description) VALUES (?, ?, ?);";
+        $con->pushParam($this->description);
+ 
+        if ($con->executeNoneQuery($query) > 0) {
+            $this->policyTypeID = $con->getLastInsertID();
             return true;
         }
 
@@ -164,72 +77,66 @@ class Policytype
     }
 
     /**
-     * Update the policyholder
+     * Update the policytype
      * @return bool
      */
-    private function updatePolicyholder(): bool
+    private function updatePolicytype(): bool
     {
         $con = new \MysqlClass();
-        $query = "UPDATE bank SET firstName = ?, lastName = ?, streetName = ?, city = ?, state = ?, zip = ?, WHERE policyholderID = ? AND Deleted = 0";
-        $con->pushParam($this->firstName);
-        $con->pushParam($this->lastName);
-        $con->pushParam($this->streetName);
-        $con->pushParam($this->city);
-        $con->pushParam($this->state);
-        $con->pushParam($this->zip);
-        $con->pushParam($this->policyholderID);
+        $query = "UPDATE policytype SET description = ? WHERE policyTypeID = ? AND Deleted = 0";
+        $con->pushParam($this->description);
 
-        return $con->executeNoneQuery_Safe($query) > 0;
+        return $con->executeNoneQuery($query) > 0;
     }
 
     /**
-     * Delete the policyholder
-     * @param int $policyHolderID
+     * Delete the policytype
+     * @param int $policyTypeID
      * @return bool
      */
-    public static function delete(int $policyHolderID): bool
+    public static function delete(int $policyTypeID): bool
     {
         $con = new \MysqlClass();
-        $query = "UPDATE policyholder SET Deleted = 1 WHERE Id = ?";
-        $con->pushParam($id);
+        $query = "UPDATE policytype SET Deleted = 1 WHERE Id = ?";
+        $con->pushParam($policyTypeID);
 
-        return $con->executeNoneQuery_Safe($query) > 0;
+        return $con->executeNoneQuery($query) > 0;
     }
 
     /**
-     * Get the policyholder by policyholderID
-     * @param int $policyHolderID
-     * @return policyholder|null
+     * Get the policyType by policyTypeID
+     * @param int $policyTypeID
+     * @return policyType|null
      */
-    public static function getpolicyholderById(int $policyHolderID): ?policyholder
+    public static function getpolicyTypeById(int $policyTypeID): ?policyType
     {
         $con = new \MysqlClass();
-        $query = "SELECT * FROM policyholder WHERE Id = ? AND Deleted = 0 LIMIT 1";
-        $con->pushParam($id);
-        $result = $con->queryObject_Safe($query);
+        $query = "SELECT * FROM policytype WHERE Id = ? AND Deleted = 0 LIMIT 1";
+        $con->pushParam($policyTypeID);
+        $result = $con->queryObject($query);
 
         if ($result) {
-            return self::mapPolicyholder($result);
+            return self::mapPolicytype($result);
         }
 
         return null;
     }
 
     /**
-     * Get all banks
+     * Get all policyType
      * @return array
      */
-    public static function getAllPolicyholders(): array
+    public static function getAllPolicytype(): array
     {
         $con = new \MysqlClass();
-        $query = "SELECT * FROM policyholder WHERE Deleted = 0";
+        $query = "SELECT * FROM policytype WHERE Deleted = 0";
         $result = [];
 
-        $Policyholders = $con->queryAllObject_Safe($query);
+        $Policytypes = $con->queryAllObject($query);
 
-        if ($Policyholders) {
-            foreach ($Policyholders as $row) {
-                $result[] = self::mapPolicyholder($row);
+        if ($Policytypes) {
+            foreach ($Policytypes as $row) {
+                $result[] = self::mapPolicytype($row);
             }
         }
 
@@ -237,29 +144,24 @@ class Policytype
     }
 
     /**
-     * Get the bank display values
+     * Get the policytype display values
      * @return array
      */
     public static function getDisplay(): array
     {
-        $banks = self::getAllPolicyholder();
+        $banks = self::getAllPolicytype();
         $result = [];
 
-        foreach ($Policyholders as $Policyholder) {
-            $result[] = ["policyholderID" => $Policyholder->getpolicyHolderID(), "name" => $bank->getfirstame()];
+        foreach ($Policytypes as $Policytype) {
+            $result[] = ["policytypeID" => $Policytype->getpolicytypeID(), "name" => $policyType->getdescription()];
         }
 
         return $result;
     }
 
-    private static function mapPolicyholder($Policyholder): Policyholder
+    private static function mapPolicytype($Policytype): Policytype
     {
         return (new self())
-            ->setpolicyHolderID($Policyholder->Id)
-            ->setfirstName($Policyholder->firstName)
-            ->setlastName($Policyholder->lastName)
-            ->setstreetName($Policyholder->streetName)
-            ->setcity($Policyholder->city)
-            ->setstate($Policyholder->state)
-            ->setzip($Policyholder->zip);
+            ->setPolicytypeID($Policytype->policyTypeID)
+            ->setfirstName($Policytype->description);
     }

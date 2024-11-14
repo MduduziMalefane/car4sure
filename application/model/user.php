@@ -6,38 +6,38 @@ use TLC\Application\Database;
 /**
  * Policyholder Model
  */
-class Policyholder
+class User
 {
-    private int $policyHolderID;
+    private int $userID;
     private string $firstName;
     private string $lastName;
-    private string $streetName;
-    private string $city;
-    private string $state;
-    private int $zip;
+    private int $age;
+    private string $gender;
+    private string $martialStatus;
+   
 
     public function __construct()
     {
-        $this->policyHolderID = 0;
+        $this->userID = 0;
         $this->firstName = '';
         $this->lastName = '';
-        $this->city = '';
-        $this->state = '';
-        $this->zip = 0;
+        $this->gender = '';
+        $this->martialStatus = '';
+        $this->age = 0;
     }
-    public function getpolicyHolderID(): int
+    public function getuserID(): int
     {
-        return $this->id;
+        return $this->userID;
     }
 
     /**
-     * Set the value of Id
-     * @param int $Id
+     * Set the value of userID
+     * @param int $userID
      * @return self
      */
-    public function setpolicyHolderID(int $policyHolderID): self
+    public function setuserID(int $userID): self
     {
-        $this->policyHolderID = $policyHolderID;
+        $this->userID = $userID;
         return $this;
     }
 
@@ -73,97 +73,79 @@ class Policyholder
         return $this;
     }
 
-    public function getstreetName(): string
+    public function getage(): int
     {
-        return $this->streetName;
+        return $this->age;
     }
 
     /**
-     * Set the value of streetName
-     * @param int $streetName
+     * Set the value of age
+     * @param int $age
      * @return self
      */
-    public function setstreetName(string $streetName): self
+    public function setage(string $age): self
     {
-        $this->streetName = $streetName;
+        $this->age = $age;
         return $this;
     }
 
-    public function getcity(): string
+    public function getgender(): string
     {
-        return $this->city;
+        return $this->gender;
     }
 
     /**
-     * Set the value of city
-     * @param int $city
+     * Set the value of gender
+     * @param int $gender
      * @return self
      */
-    public function setcity(string $city): self
+    public function setgender(string $gender): self
     {
-        $this->city = $city;
+        $this->gender = $gender;
         return $this;
     }
 
-    public function getstate(): string
+    public function getmartialStatus(): string
     {
         return $this->state;
     }
 
     /**
      * Set the value of state
-     * @param int $state
+     * @param int $martialStatus
      * @return self
      */
-    public function setstate(string $state): self
+    public function setmartialStatus(string $martialStatus): self
     {
-        $this->state = $state;
-        return $this;
-    }
-
-    public function getzip(): int
-    {
-        return $this->firstName;
-    }
-
-    /**
-     * Set the value of zip
-     * @param int $zip
-     * @return self
-     */
-    public function setzip(int $zip): self
-    {
-        $this->zip = $zip;
+        $this->state = $martialStatus;
         return $this;
     }
 
     public function save(): bool
     {
-        if ($this->id == 0) {
-            return $this->savePolicyholder();
+        if ($this->userID == 0) {
+            return $this->saveUser();
         } else {
-            return $this->updatePolicyholder();
+            return $this->updateUser();
         }
     }
 
     /**
-     * Insert the bank
+     * Insert the user
      * @return bool
      */
-    private function savePolicyholder(): bool
+    private function saveUser(): bool
     {
         $con = new \MysqlClass();
-        $query = "INSERT INTO policyholder (firstName, lastName, streetName, city, state, zip,) VALUES (?, ?, ?);";
+        $query = "INSERT INTO user (firstName, lastName, age, gender, martialStatus) VALUES (?, ?, ?);";
         $con->pushParam($this->firstName);
         $con->pushParam($this->lastName);
-        $con->pushParam($this->streetName);
-        $con->pushParam($this->city);
-        $con->pushParam($this->state);
-        $con->pushParam($this->zip);
+        $con->pushParam($this->age);
+        $con->pushParam($this->gender);
+        $con->pushParam($this->martialStatus);
 
-
-        if ($con->executeNoneQuery_Safe($query) > 0) {
-            $this->id = $con->getLastInsertPolicyHolderID();
+        if ($con->executeNoneQuery($query) > 0) {
+            $this->userID = $con->getLastInsertID();
             return true;
         }
 
@@ -171,72 +153,71 @@ class Policyholder
     }
 
     /**
-     * Update the policyholder
+     * Update the user
      * @return bool
      */
-    private function updatePolicyholder(): bool
+    private function updateuser(): bool
     {
         $con = new \MysqlClass();
-        $query = "UPDATE bank SET firstName = ?, lastName = ?, streetName = ?, city = ?, state = ?, zip = ?, WHERE policyholderID = ? AND Deleted = 0";
+        $query = "UPDATE user SET firstName = ?, lastName = ?, age = ?, gender = ?, martialStatus = ? WHERE userID = ? AND Deleted = 0";
         $con->pushParam($this->firstName);
         $con->pushParam($this->lastName);
-        $con->pushParam($this->streetName);
-        $con->pushParam($this->city);
-        $con->pushParam($this->state);
-        $con->pushParam($this->zip);
-        $con->pushParam($this->policyholderID);
+        $con->pushParam($this->age);
+        $con->pushParam($this->gender);
+        $con->pushParam($this->martialStatus);
+        $con->pushParam($this->userID);
 
-        return $con->executeNoneQuery_Safe($query) > 0;
+        return $con->executeNoneQuery($query) > 0;
     }
 
     /**
-     * Delete the policyholder
-     * @param int $policyHolderID
+     * Delete the user
+     * @param int $userID
      * @return bool
      */
-    public static function delete(int $policyHolderID): bool
+    public static function delete(int $userID): bool
     {
         $con = new \MysqlClass();
-        $query = "UPDATE policyholder SET Deleted = 1 WHERE Id = ?";
-        $con->pushParam($id);
+        $query = "UPDATE user SET Deleted = 1 WHERE userID = ?";
+        $con->pushParam($userID);
 
-        return $con->executeNoneQuery_Safe($query) > 0;
+        return $con->executeNoneQuery($query) > 0;
     }
 
     /**
-     * Get the policyholder by policyholderID
-     * @param int $policyHolderID
+     * Get the policyholder by userID
+     * @param int $userID
      * @return policyholder|null
      */
-    public static function getpolicyholderById(int $policyHolderID): ?policyholder
+    public static function getuserrByuserID(int $userID): ?user
     {
         $con = new \MysqlClass();
-        $query = "SELECT * FROM policyholder WHERE Id = ? AND Deleted = 0 LIMIT 1";
-        $con->pushParam($id);
-        $result = $con->queryObject_Safe($query);
+        $query = "SELECT * FROM user WHERE userID = ? AND Deleted = 0 LIMIT 1";
+        $con->pushParam($userID);
+        $result = $con->queryObject($query);
 
         if ($result) {
-            return self::mapPolicyholder($result);
+            return self::mapUser($result);
         }
 
         return null;
     }
 
     /**
-     * Get all banks
+     * Get all users
      * @return array
      */
-    public static function getAllPolicyholders(): array
+    public static function getAllusers(): array
     {
         $con = new \MysqlClass();
-        $query = "SELECT * FROM policyholder WHERE Deleted = 0";
+        $query = "SELECT * FROM user WHERE Deleted = 0";
         $result = [];
 
-        $Policyholders = $con->queryAllObject_Safe($query);
+        $Policyholders = $con->queryAllObject($query);
 
-        if ($Policyholders) {
-            foreach ($Policyholders as $row) {
-                $result[] = self::mapPolicyholder($row);
+        if ($users) {
+            foreach ($users as $row) {
+                $result[] = self::mapUser($row);
             }
         }
 
@@ -244,29 +225,28 @@ class Policyholder
     }
 
     /**
-     * Get the bank display values
+     * Get the user display values
      * @return array
      */
     public static function getDisplay(): array
     {
-        $banks = self::getAllPolicyholder();
+        $users = self::getAllUser();
         $result = [];
 
-        foreach ($Policyholders as $Policyholder) {
-            $result[] = ["policyholderID" => $Policyholder->getpolicyHolderID(), "name" => $bank->getfirstame()];
+        foreach ($users as $user) {
+            $result[] = ["userID" => $user->getuserID(), "name" => $user->getfirstame()];
         }
 
         return $result;
     }
 
-    private static function mapPolicyholder($Policyholder): Policyholder
+    private static function mapUser($user): user
     {
         return (new self())
-            ->setpolicyHolderID($Policyholder->Id)
-            ->setfirstName($Policyholder->firstName)
-            ->setlastName($Policyholder->lastName)
-            ->setstreetName($Policyholder->streetName)
-            ->setcity($Policyholder->city)
-            ->setstate($Policyholder->state)
-            ->setzip($Policyholder->zip);
+            ->setuserID($user->userID)
+            ->setfirstName($user->firstName)
+            ->setlastName($user->lastName)
+            ->setage($user->age)
+            ->setgender($user->gender)
+            ->setmartialStatus($user->state)
     }

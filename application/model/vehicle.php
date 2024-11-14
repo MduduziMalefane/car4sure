@@ -4,166 +4,173 @@ use PDO;
 use TLC\Application\Database;
 
 /**
- * Policyholder Model
+ * Vehicle Model
  */
-class Policyholder
+class Vehicle
 {
-    private int $policyHolderID;
-    private string $firstName;
-    private string $lastName;
-    private string $streetName;
-    private string $city;
-    private string $state;
-    private int $zip;
+    private int $plateID;
+    private int $year;
+    private string $make;
+    private string $model;
+    private int $vin;
+    private string $usage;
+    private string $primaryUse;
+    private int $annualMilage;
+    private string $ownership;
 
     public function __construct()
     {
-        $this->policyHolderID = 0;
-        $this->firstName = '';
-        $this->lastName = '';
-        $this->city = '';
-        $this->state = '';
-        $this->zip = 0;
+        $this->plateID = 0;
+        $this->year = '';
+        $this->make = '';
+        $this->model = '';
+        $this->vin = 0;
+        $this->usage = '';
+        $this->primaryUse = '';
+        $this->annualMilage = 0;
+        $this->ownership = '';
     }
-    public function getpolicyHolderID(): int
+    public function getplateID(): int
     {
-        return $this->id;
+        return $this->plateID;
     }
 
     /**
-     * Set the value of Id
-     * @param int $Id
+     * Set the value of plateID
+     * @param int $plateID
      * @return self
      */
-    public function setpolicyHolderID(int $policyHolderID): self
+    public function setplateID(int $plateID): self
     {
-        $this->policyHolderID = $policyHolderID;
+        $this->plateID = $plateID;
         return $this;
     }
 
-    public function getfirstName(): string
+    public function getyear(): int
     {
-        return $this->firstName;
+        return $this->year;
     }
 
     /**
-     * Set the value of firstName
-     * @param int $firstName
+     * Set the value of year
+     * @param int $year
      * @return self
      */
-    public function setfirstName(string $firstName): self
+    public function setyear(string $year): self
     {
-        $this->firstName = $firstName;
+        $this->firstName = $year;
         return $this;
     }
 
-    public function getlastName(): string
+    public function getmake(): string
     {
-        return $this->lastName;
+        return $this->make;
     }
 
     /**
-     * Set the value of lastName
-     * @param int $lastName
+     * Set the value of make
+     * @param int $make
      * @return self
      */
-    public function setlastName(string $lastName): self
+    public function setmake(string $make): self
     {
-        $this->lastName = $lastName;
+        $this->make = $make;
         return $this;
     }
 
-    public function getstreetName(): string
+    public function getmake(): string
     {
-        return $this->streetName;
+        return $this->make;
     }
 
     /**
-     * Set the value of streetName
-     * @param int $streetName
+     * Set the value of make
+     * @param int $make
      * @return self
      */
-    public function setstreetName(string $streetName): self
+    public function setmake(string $make): self
     {
-        $this->streetName = $streetName;
+        $this->make = $make;
         return $this;
     }
 
-    public function getcity(): string
+    public function getmodel(): string
     {
-        return $this->city;
+        return $this->model;
     }
 
     /**
-     * Set the value of city
-     * @param int $city
+     * Set the value of model
+     * @param int $model
      * @return self
      */
-    public function setcity(string $city): self
+    public function setmodel(string $model): self
     {
-        $this->city = $city;
+        $this->model = $model;
         return $this;
     }
 
-    public function getstate(): string
+    public function getvin(): int
     {
-        return $this->state;
+        return $this->vin;
     }
 
     /**
-     * Set the value of state
-     * @param int $state
+     * Set the value of vin
+     * @param int $vin
      * @return self
      */
-    public function setstate(string $state): self
+    public function setvin(int $vin): self
     {
-        $this->state = $state;
+        $this->vin = $vin;
         return $this;
     }
 
-    public function getzip(): int
+    public function usage(): string
     {
-        return $this->firstName;
+        return $this->usage;
     }
 
     /**
-     * Set the value of zip
-     * @param int $zip
+     * Set the value of usage
+     * @param int $usage
      * @return self
      */
-    public function setzip(int $zip): self
+    public function setusage(int $usage): self
     {
-        $this->zip = $zip;
+        $this->usage = $usage;
         return $this;
     }
 
     public function save(): bool
     {
-        if ($this->id == 0) {
-            return $this->savePolicyholder();
+        if ($this->plateID == 0) {
+            return $this->saveVehicle();
         } else {
-            return $this->updatePolicyholder();
+            return $this->updateVehicle();
         }
     }
 
     /**
-     * Insert the bank
+     * Insert the Vehicle
      * @return bool
      */
-    private function savePolicyholder(): bool
+    private function saveVehicle(): bool
     {
         $con = new \MysqlClass();
-        $query = "INSERT INTO policyholder (firstName, lastName, streetName, city, state, zip,) VALUES (?, ?, ?);";
-        $con->pushParam($this->firstName);
-        $con->pushParam($this->lastName);
-        $con->pushParam($this->streetName);
-        $con->pushParam($this->city);
-        $con->pushParam($this->state);
-        $con->pushParam($this->zip);
+        $query = "INSERT INTO vehicle (year, make, model, vin, usage, primaryUse,annualMilage,ownership) VALUES (?, ?, ?);";
+        $con->pushParam($this->year);
+        $con->pushParam($this->make);
+        $con->pushParam($this->model);
+        $con->pushParam($this->vin);
+        $con->pushParam($this->usage);
+        $con->pushParam($this->primaryUse);
+        $con->pushParam($this->annualMilage);
+        $con->pushParam($this->ownership);
 
 
-        if ($con->executeNoneQuery_Safe($query) > 0) {
-            $this->id = $con->getLastInsertPolicyHolderID();
+        if ($con->executeNoneQuery($query) > 0) {
+            $this->plateID = $con->getLastInsertID();
             return true;
         }
 
@@ -171,72 +178,73 @@ class Policyholder
     }
 
     /**
-     * Update the policyholder
+     * Update the vehicle
      * @return bool
      */
-    private function updatePolicyholder(): bool
+    private function updateVehicle(): bool
     {
         $con = new \MysqlClass();
-        $query = "UPDATE bank SET firstName = ?, lastName = ?, streetName = ?, city = ?, state = ?, zip = ?, WHERE policyholderID = ? AND Deleted = 0";
-        $con->pushParam($this->firstName);
-        $con->pushParam($this->lastName);
-        $con->pushParam($this->streetName);
-        $con->pushParam($this->city);
-        $con->pushParam($this->state);
-        $con->pushParam($this->zip);
-        $con->pushParam($this->policyholderID);
+        $query = "UPDATE vehicle SET year = ?, make = ?, model = ?, vin = ?, usage = ?, primaryUse = ?,annualMilage = ?,ownership = ?, WHERE plateID = ? AND Deleted = 0";
+        $con->pushParam($this->year);
+        $con->pushParam($this->make);
+        $con->pushParam($this->model);
+        $con->pushParam($this->vin);
+        $con->pushParam($this->usage);
+        $con->pushParam($this->primaryUse);
+        $con->pushParam($this->annualMilage);
+        $con->pushParam($this->ownership);
 
-        return $con->executeNoneQuery_Safe($query) > 0;
+        return $con->executeNoneQuery($query) > 0;
     }
 
     /**
-     * Delete the policyholder
-     * @param int $policyHolderID
+     * Delete the vehicle
+     * @param int $plateID
      * @return bool
      */
-    public static function delete(int $policyHolderID): bool
+    public static function delete(int $plateID): bool
     {
         $con = new \MysqlClass();
-        $query = "UPDATE policyholder SET Deleted = 1 WHERE Id = ?";
-        $con->pushParam($id);
+        $query = "UPDATE vehicle SET Deleted = 1 WHERE plateID = ?";
+        $con->pushParam($plateID);
 
-        return $con->executeNoneQuery_Safe($query) > 0;
+        return $con->executeNoneQuery($query) > 0;
     }
 
     /**
-     * Get the policyholder by policyholderID
-     * @param int $policyHolderID
-     * @return policyholder|null
+     * Get the vehicle by plateID
+     * @param int $plateID
+     * @return vehicle|null
      */
-    public static function getpolicyholderById(int $policyHolderID): ?policyholder
+    public static function getvehicleByplateID(int $plateID): ?vehicle
     {
         $con = new \MysqlClass();
-        $query = "SELECT * FROM policyholder WHERE Id = ? AND Deleted = 0 LIMIT 1";
-        $con->pushParam($id);
-        $result = $con->queryObject_Safe($query);
+        $query = "SELECT * FROM vehicle WHERE plateID = ? AND Deleted = 0 LIMIT 1";
+        $con->pushParam($plateID);
+        $result = $con->queryObject($query);
 
         if ($result) {
-            return self::mapPolicyholder($result);
+            return self::mapVehilce($result);
         }
 
         return null;
     }
 
     /**
-     * Get all banks
+     * Get all vehicles
      * @return array
      */
-    public static function getAllPolicyholders(): array
+    public static function getAllVehicles(): array
     {
         $con = new \MysqlClass();
-        $query = "SELECT * FROM policyholder WHERE Deleted = 0";
+        $query = "SELECT * FROM vehicle WHERE Deleted = 0";
         $result = [];
 
-        $Policyholders = $con->queryAllObject_Safe($query);
+        $Policyholders = $con->queryAllObject($query);
 
-        if ($Policyholders) {
-            foreach ($Policyholders as $row) {
-                $result[] = self::mapPolicyholder($row);
+        if ($Vehicles) {
+            foreach ($Vehicles as $row) {
+                $result[] = self::mapVehicle($row);
             }
         }
 
@@ -244,29 +252,31 @@ class Policyholder
     }
 
     /**
-     * Get the bank display values
+     * Get the vehicle display values
      * @return array
      */
     public static function getDisplay(): array
     {
-        $banks = self::getAllPolicyholder();
+        $vehicle = self::getAllVehicles();
         $result = [];
 
-        foreach ($Policyholders as $Policyholder) {
-            $result[] = ["policyholderID" => $Policyholder->getpolicyHolderID(), "name" => $bank->getfirstame()];
+        foreach ($Vehicles as $Vehicle) {
+            $result[] = ["plateID" => $vehicle->getplateID(), "name" => $vehicle->getyear()];
         }
 
         return $result;
     }
 
-    private static function mapPolicyholder($Policyholder): Policyholder
+    private static function mapVehicle($Vehicle): Vehicle
     {
         return (new self())
-            ->setpolicyHolderID($Policyholder->Id)
-            ->setfirstName($Policyholder->firstName)
-            ->setlastName($Policyholder->lastName)
-            ->setstreetName($Policyholder->streetName)
-            ->setcity($Policyholder->city)
-            ->setstate($Policyholder->state)
-            ->setzip($Policyholder->zip);
+            ->setplateID($Vehicle->plateID)
+            ->setyear($Vehicle->year)
+            ->setlastName($Vehicle->make)
+            ->setstreetName($Vehicle->model)
+            ->setcity($Vehicle->vin)
+            ->setstate($Vehicle->usage)
+            ->setzip($Vehicle->primaryUse)
+            ->setzip($Vehicle->annualMilage)
+            ->setzip($Vehicle->ownership);
     }

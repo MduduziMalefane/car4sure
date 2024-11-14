@@ -6,11 +6,9 @@ use TLC\Application\Database;
 /**
  * Policyholder Model
  */
-class Policyholder
+class GarageAddress
 {
-    private int $policyHolderID;
-    private string $firstName;
-    private string $lastName;
+    private int $garageID;
     private string $streetName;
     private string $city;
     private string $state;
@@ -18,58 +16,25 @@ class Policyholder
 
     public function __construct()
     {
-        $this->policyHolderID = 0;
-        $this->firstName = '';
-        $this->lastName = '';
+        $this->garageID = 0;
+        $this->streetName = '';
         $this->city = '';
         $this->state = '';
         $this->zip = 0;
     }
-    public function getpolicyHolderID(): int
+    public function getgarageID(): int
     {
-        return $this->id;
+        return $this->garageID;
     }
 
     /**
-     * Set the value of Id
-     * @param int $Id
+     * Set the value of garageID
+     * @param int $garageID
      * @return self
      */
-    public function setpolicyHolderID(int $policyHolderID): self
+    public function setgarageID(int $garageID): self
     {
-        $this->policyHolderID = $policyHolderID;
-        return $this;
-    }
-
-    public function getfirstName(): string
-    {
-        return $this->firstName;
-    }
-
-    /**
-     * Set the value of firstName
-     * @param int $firstName
-     * @return self
-     */
-    public function setfirstName(string $firstName): self
-    {
-        $this->firstName = $firstName;
-        return $this;
-    }
-
-    public function getlastName(): string
-    {
-        return $this->lastName;
-    }
-
-    /**
-     * Set the value of lastName
-     * @param int $lastName
-     * @return self
-     */
-    public function setlastName(string $lastName): self
-    {
-        $this->lastName = $lastName;
+        $this->garageID = $garageID;
         return $this;
     }
 
@@ -105,14 +70,14 @@ class Policyholder
         return $this;
     }
 
-    public function getstate(): string
+    public function getcity(): string
     {
-        return $this->state;
+        return $this->city;
     }
 
     /**
-     * Set the value of state
-     * @param int $state
+     * Set the value of city
+     * @param int $city
      * @return self
      */
     public function setstate(string $state): self
@@ -123,7 +88,7 @@ class Policyholder
 
     public function getzip(): int
     {
-        return $this->firstName;
+        return $this->zip;
     }
 
     /**
@@ -131,39 +96,32 @@ class Policyholder
      * @param int $zip
      * @return self
      */
-    public function setzip(int $zip): self
-    {
-        $this->zip = $zip;
-        return $this;
-    }
-
+  
     public function save(): bool
     {
         if ($this->id == 0) {
-            return $this->savePolicyholder();
+            return $this->saveGarageAddress();
         } else {
-            return $this->updatePolicyholder();
+            return $this->updateGarageAddress();
         }
     }
 
     /**
-     * Insert the bank
+     * Insert the GarageAddress
      * @return bool
      */
-    private function savePolicyholder(): bool
+    private function saveGarageAddress(): bool
     {
         $con = new \MysqlClass();
-        $query = "INSERT INTO policyholder (firstName, lastName, streetName, city, state, zip,) VALUES (?, ?, ?);";
-        $con->pushParam($this->firstName);
-        $con->pushParam($this->lastName);
+        $query = "INSERT INTO garageaddress (streetName, city, state, zip) VALUES (?, ?, ?);";
         $con->pushParam($this->streetName);
         $con->pushParam($this->city);
         $con->pushParam($this->state);
         $con->pushParam($this->zip);
 
 
-        if ($con->executeNoneQuery_Safe($query) > 0) {
-            $this->id = $con->getLastInsertPolicyHolderID();
+        if ($con->executeNoneQuery($query) > 0) {
+            $this->garageID = $con->getLastInsertId();
             return true;
         }
 
@@ -171,72 +129,70 @@ class Policyholder
     }
 
     /**
-     * Update the policyholder
+     * Update the GarageAddress
      * @return bool
      */
-    private function updatePolicyholder(): bool
+    private function updateGarageAddress(): bool
     {
         $con = new \MysqlClass();
-        $query = "UPDATE bank SET firstName = ?, lastName = ?, streetName = ?, city = ?, state = ?, zip = ?, WHERE policyholderID = ? AND Deleted = 0";
-        $con->pushParam($this->firstName);
-        $con->pushParam($this->lastName);
+        $query = "UPDATE garageaddress SET streetName = ?, city = ?, state = ?, zip = ?, WHERE garageID = ? AND Deleted = 0";
         $con->pushParam($this->streetName);
         $con->pushParam($this->city);
         $con->pushParam($this->state);
         $con->pushParam($this->zip);
-        $con->pushParam($this->policyholderID);
+        $con->pushParam($this->garageID);
 
-        return $con->executeNoneQuery_Safe($query) > 0;
+        return $con->executeNoneQuery($query) > 0;
     }
 
     /**
-     * Delete the policyholder
-     * @param int $policyHolderID
+     * Delete the garageaddress
+     * @param int $garageID
      * @return bool
      */
-    public static function delete(int $policyHolderID): bool
+    public static function delete(int $garageID): bool
     {
         $con = new \MysqlClass();
-        $query = "UPDATE policyholder SET Deleted = 1 WHERE Id = ?";
-        $con->pushParam($id);
+        $query = "UPDATE garage SET Deleted = 1 WHERE garageID = ?";
+        $con->pushParam($garageID);
 
-        return $con->executeNoneQuery_Safe($query) > 0;
+        return $con->executeNoneQuery($query) > 0;
     }
 
     /**
-     * Get the policyholder by policyholderID
-     * @param int $policyHolderID
-     * @return policyholder|null
+     * Get the garageAddress by garageID
+     * @param int $garageID
+     * @return garage|null
      */
-    public static function getpolicyholderById(int $policyHolderID): ?policyholder
+    public static function getgarageaddressBygarageID(int $garageID): ?garageaddress
     {
         $con = new \MysqlClass();
-        $query = "SELECT * FROM policyholder WHERE Id = ? AND Deleted = 0 LIMIT 1";
-        $con->pushParam($id);
-        $result = $con->queryObject_Safe($query);
+        $query = "SELECT * FROM garageaddress WHERE garageID = ? AND Deleted = 0 LIMIT 1";
+        $con->pushParam($garageID);
+        $result = $con->queryObject($query);
 
         if ($result) {
-            return self::mapPolicyholder($result);
+            return self::mapGarageAddress($result);
         }
 
         return null;
     }
 
     /**
-     * Get all banks
+     * Get all garageaddresses
      * @return array
      */
-    public static function getAllPolicyholders(): array
+    public static function getAllGarageAddresses(): array
     {
         $con = new \MysqlClass();
-        $query = "SELECT * FROM policyholder WHERE Deleted = 0";
+        $query = "SELECT * FROM garageaddress WHERE Deleted = 0";
         $result = [];
 
-        $Policyholders = $con->queryAllObject_Safe($query);
+        $GarageAddress = $con->queryAllObject($query);
 
-        if ($Policyholders) {
-            foreach ($Policyholders as $row) {
-                $result[] = self::mapPolicyholder($row);
+        if ($GarageAddresses) {
+            foreach ($GarageAddresses as $row) {
+                $result[] = self::mapGarageAddress($row);
             }
         }
 
@@ -249,24 +205,22 @@ class Policyholder
      */
     public static function getDisplay(): array
     {
-        $banks = self::getAllPolicyholder();
+        $garageaddresses = self::getAllGarageAddress();
         $result = [];
 
-        foreach ($Policyholders as $Policyholder) {
-            $result[] = ["policyholderID" => $Policyholder->getpolicyHolderID(), "name" => $bank->getfirstame()];
+        foreach ($GarageAddresses as $GarageAddress) {
+            $result[] = ["garageID" => $garageID->getgarageID(), "name" => $garageaddress->getyear()];
         }
 
         return $result;
     }
 
-    private static function mapPolicyholder($Policyholder): Policyholder
+    private static function mapGarageAddress($garageAddress): garageAddress
     {
         return (new self())
-            ->setpolicyHolderID($Policyholder->Id)
-            ->setfirstName($Policyholder->firstName)
-            ->setlastName($Policyholder->lastName)
-            ->setstreetName($Policyholder->streetName)
-            ->setcity($Policyholder->city)
-            ->setstate($Policyholder->state)
-            ->setzip($Policyholder->zip);
+            ->setgarageID($garageAddress->garageID)
+            ->setyear($garageAddress->year)
+            ->setlastName($garageAddress->city)
+            ->setstreetName($garageAddress->state)
+            ->setzip($garageAddress->zip);
     }

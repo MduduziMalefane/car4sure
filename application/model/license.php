@@ -6,164 +6,150 @@ use TLC\Application\Database;
 /**
  * Policyholder Model
  */
-class Policyholder
+class License
 {
-    private int $policyHolderID;
-    private string $firstName;
-    private string $lastName;
-    private string $streetName;
-    private string $city;
-    private string $state;
-    private int $zip;
+    private int $licenseNo;
+    private string $licenseState;
+    private string $licenseStatus;
+    private DateTime $licenseEffectiveDate;
+    private DateTime $licenseExpirationDate;
+    private string $licenseClass;
+
 
     public function __construct()
     {
-        $this->policyHolderID = 0;
-        $this->firstName = '';
-        $this->lastName = '';
-        $this->city = '';
-        $this->state = '';
-        $this->zip = 0;
+        $this->licenseNo = 0;
+        $this->licenseState = '';
+        $this->licenseStatus = '';
+        $this->licenseEffectiveDate = '';
+        $this->licenseExpirationDate = '';
+        $this->licenseClass = 0;
     }
-    public function getpolicyHolderID(): int
+    public function getlicenseNo(): int
     {
-        return $this->id;
+        return $this->licenseNo;
     }
 
     /**
-     * Set the value of Id
-     * @param int $Id
+     * Set the value of licenseNo
+     * @param int $licenseNo
      * @return self
      */
-    public function setpolicyHolderID(int $policyHolderID): self
+    public function setlicenseNo(int $licenseNo): self
     {
-        $this->policyHolderID = $policyHolderID;
+        $this->licenseNo = $licenseNo;
         return $this;
     }
 
-    public function getfirstName(): string
+    public function getlicenseState(): string
     {
-        return $this->firstName;
+        return $this->licenseState;
     }
 
     /**
-     * Set the value of firstName
-     * @param int $firstName
+     * Set the value of licenseState
+     * @param int $licenseState
      * @return self
      */
-    public function setfirstName(string $firstName): self
+    public function setlicenseState(string $licenseState): self
     {
-        $this->firstName = $firstName;
+        $this->licenseState = $licenseState;
         return $this;
     }
 
-    public function getlastName(): string
+    public function getlicenseStatus(): string
     {
-        return $this->lastName;
+        return $this->licenseStatus;
     }
 
     /**
-     * Set the value of lastName
-     * @param int $lastName
+     * Set the value of licenseStatus
+     * @param int $licenseStatus
      * @return self
      */
-    public function setlastName(string $lastName): self
+    public function setlicenseStatus(string $licenseStatus): self
     {
-        $this->lastName = $lastName;
+        $this->licenseStatus = $licenseStatus;
         return $this;
     }
 
-    public function getstreetName(): string
+    public function getlicenseEffectiveDate(): new DateTime
     {
-        return $this->streetName;
+        return $this->licenseEffectiveDate;
     }
 
     /**
-     * Set the value of streetName
-     * @param int $streetName
+     * Set the value of licenseEffectiveDate
+     * @param int $licenseEffectiveDate
      * @return self
      */
-    public function setstreetName(string $streetName): self
+    public function setlicenseEffectiveDate(string $licenseEffectiveDate): self
     {
-        $this->streetName = $streetName;
+        $this->licenseEffectiveDate = $licenseEffectiveDate;
         return $this;
     }
 
-    public function getcity(): string
+    public function getlicenseExpirationDate(): string
     {
-        return $this->city;
+        return $this->licenseExpirationDate(;
     }
 
     /**
-     * Set the value of city
-     * @param int $city
+     * Set the value of licenseExpirationDate(
+     * @param int $licenseExpirationDate(
      * @return self
      */
-    public function setcity(string $city): self
+    public function setlicenseExpirationDate((string $licenseExpirationDate(): self
     {
-        $this->city = $city;
+        $this->licenseExpirationDate( = $licenseExpirationDate(;
         return $this;
     }
 
-    public function getstate(): string
+    public function getlicenseClass(): string
     {
-        return $this->state;
+        return $this->licenseClass;
     }
 
     /**
-     * Set the value of state
-     * @param int $state
+     * Set the value of licenseClass
+     * @param int $licenseClass
      * @return self
      */
-    public function setstate(string $state): self
+    public function setlicenseClass(string $licenseClass): self
     {
-        $this->state = $state;
+        $this->licenseClass = $licenseClass;
         return $this;
     }
 
-    public function getzip(): int
-    {
-        return $this->firstName;
-    }
-
-    /**
-     * Set the value of zip
-     * @param int $zip
-     * @return self
-     */
-    public function setzip(int $zip): self
-    {
-        $this->zip = $zip;
-        return $this;
-    }
+  
 
     public function save(): bool
     {
         if ($this->id == 0) {
-            return $this->savePolicyholder();
+            return $this->saveLicense();
         } else {
-            return $this->updatePolicyholder();
+            return $this->updateLicense();
         }
     }
 
     /**
-     * Insert the bank
+     * Insert the license
      * @return bool
      */
-    private function savePolicyholder(): bool
+    private function saveLicense(): bool
     {
         $con = new \MysqlClass();
-        $query = "INSERT INTO policyholder (firstName, lastName, streetName, city, state, zip,) VALUES (?, ?, ?);";
-        $con->pushParam($this->firstName);
-        $con->pushParam($this->lastName);
-        $con->pushParam($this->streetName);
-        $con->pushParam($this->city);
-        $con->pushParam($this->state);
-        $con->pushParam($this->zip);
+        $query = "INSERT INTO license (licenseState, licensestatus, licenseeffectivedate, licenseexpirationdate) VALUES (?, ?, ?);";
+        $con->pushParam($this->licenseState);
+        $con->pushParam($this->licenseStatus);
+        $con->pushParam($this->licenseEffectiveDate);
+        $con->pushParam($this->licenseExpirationDate);
+        $con->pushParam($this->licenseClass);
+       
 
 
-        if ($con->executeNoneQuery_Safe($query) > 0) {
-            $this->id = $con->getLastInsertPolicyHolderID();
+        if ($con->executeNoneQuery($query) > 0) {
+            $this->licenseNo = $con->getLastInsertID();
             return true;
         }
 
@@ -171,72 +157,72 @@ class Policyholder
     }
 
     /**
-     * Update the policyholder
+     * Update the license
      * @return bool
      */
-    private function updatePolicyholder(): bool
+    private function updateLicense(): bool
     {
         $con = new \MysqlClass();
-        $query = "UPDATE bank SET firstName = ?, lastName = ?, streetName = ?, city = ?, state = ?, zip = ?, WHERE policyholderID = ? AND Deleted = 0";
-        $con->pushParam($this->firstName);
-        $con->pushParam($this->lastName);
-        $con->pushParam($this->streetName);
-        $con->pushParam($this->city);
-        $con->pushParam($this->state);
-        $con->pushParam($this->zip);
-        $con->pushParam($this->policyholderID);
+        $query = "UPDATE license SET licenseState = ?, licenseStatus = ?, licenseEffectiveDate = ?, licenseExpirationDate = ?, licenseClass = ? WHERE licenseNo = ? AND Deleted = 0";
+        $con->pushParam($this->licenseNo);
+        $con->pushParam($this->licenseState);
+        $con->pushParam($this->licenseStatus);
+        $con->pushParam($this->licenseEffectiveDate);
+        $con->pushParam($this->licenseExpirationDate);
+        $con->pushParam($this->licenseClass);
+        $con->pushParam($this->licenseNo);
 
         return $con->executeNoneQuery_Safe($query) > 0;
     }
 
     /**
-     * Delete the policyholder
-     * @param int $policyHolderID
+     * Delete the license
+     * @param int $licenseNo
      * @return bool
      */
-    public static function delete(int $policyHolderID): bool
+    public static function delete(int $licenseNo): bool
     {
         $con = new \MysqlClass();
-        $query = "UPDATE policyholder SET Deleted = 1 WHERE Id = ?";
-        $con->pushParam($id);
+        $query = "UPDATE license SET Deleted = 1 WHERE licenseNo = ?";
+        $con->pushParam($licenseNo);
 
-        return $con->executeNoneQuery_Safe($query) > 0;
+        return $con->executeNoneQuery($query) > 0;
     }
 
     /**
-     * Get the policyholder by policyholderID
-     * @param int $policyHolderID
-     * @return policyholder|null
+     * Get the policyholder by licenseNo
+     * @param int $licenseNo
+     * @return license|null
      */
-    public static function getpolicyholderById(int $policyHolderID): ?policyholder
+    public static function getlicenseBylicenseNo(int $licenseNo): ?license
     {
         $con = new \MysqlClass();
-        $query = "SELECT * FROM policyholder WHERE Id = ? AND Deleted = 0 LIMIT 1";
-        $con->pushParam($id);
-        $result = $con->queryObject_Safe($query);
+        $query = "SELECT * FROM license WHERE licenseNo = ? AND Deleted = 0 LIMIT 1";
+        $con->pushParam($licenseNo);
+        $result = $con->queryObject($query);
 
         if ($result) {
-            return self::mapPolicyholder($result);
+            return self::mapLicense($result);
         }
 
         return null;
     }
 
     /**
-     * Get all banks
+     * Get all licenses
      * @return array
      */
-    public static function getAllPolicyholders(): array
+    public static function getAllLicenses(): array
     {
         $con = new \MysqlClass();
-        $query = "SELECT * FROM policyholder WHERE Deleted = 0";
+        $query = "SELECT * FROM license WHERE Deleted = 0";
         $result = [];
 
-        $Policyholders = $con->queryAllObject_Safe($query);
+        $Licenses = $con->queryAllObject($query);
 
-        if ($Policyholders) {
-            foreach ($Policyholders as $row) {
-                $result[] = self::mapPolicyholder($row);
+        if ($Licenses) {
+            foreach ($Licenses as $row) {
+                $result[] = self::mapLicenses$row);
             }
         }
 
@@ -244,7 +230,7 @@ class Policyholder
     }
 
     /**
-     * Get the bank display values
+     * Get the Licens display values
      * @return array
      */
     public static function getDisplay(): array
@@ -252,21 +238,20 @@ class Policyholder
         $banks = self::getAllPolicyholder();
         $result = [];
 
-        foreach ($Policyholders as $Policyholder) {
-            $result[] = ["policyholderID" => $Policyholder->getpolicyHolderID(), "name" => $bank->getfirstame()];
+        foreach ($Licenses as $licenses) {
+            $result[] = ["licenseNo" => $license->getlicense(), "name" => $license->getlicenseState()];
         }
 
         return $result;
     }
 
-    private static function mapPolicyholder($Policyholder): Policyholder
+    private static function mapLicense($license): license
     {
         return (new self())
-            ->setpolicyHolderID($Policyholder->Id)
-            ->setfirstName($Policyholder->firstName)
-            ->setlastName($Policyholder->lastName)
-            ->setstreetName($Policyholder->streetName)
-            ->setcity($Policyholder->city)
-            ->setstate($Policyholder->state)
-            ->setzip($Policyholder->zip);
+            ->setlicenseNo($License->licenseNo)
+            ->setfirstName($License->licenseState)
+            ->setlastName($License->licenseStatus)
+            ->setstreetName($License->licenseEffectiveDate)
+            ->setcity($License->licenseExpirationDate)
+            ->setstate($Policyholder->licenseClass);
     }
