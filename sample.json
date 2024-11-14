@@ -1,0 +1,67 @@
+{
+    "policyNo": "1234567890",
+    "policyStatus": "Active",
+    "policyType": "Auto",
+    "policyEffectiveDate": "2018-01-01",
+    "policyExpirationDate": "2019-01-01",
+    "policyHolder": {
+        "firstName": "John",
+        "lastName": "Doe",
+        "address": {
+            "street": "123 Main St",
+            "city": "New York",
+            "state": "NY",
+            "zip": "10001"
+        }
+    },
+    "drivers": [
+        {
+            "firstName": "John",
+            "lastName": "Doe",
+            "age": 35,
+            "gender": "Male",
+            "maritalStatus": "Married",
+            "licenseNumber": "1234567890",
+            "licenseState": "NY",
+            "licenseStatus": "Valid",
+            "licenseEffectiveDate": "2018-01-01",
+            "licenseExpirationDate": "2020-01-01",
+            "licenseClass": "A"
+        }
+    ],
+    "vehicles": [
+        {
+            "year": 2018,
+            "make": "Honda",
+            "model": "Accord",
+            "vin": "12345678901234567",
+            "usage": "Pleasure",
+            "primaryUse": "Commuting",
+            "annualMileage": 10000,
+            "ownership": "Leased",
+            "garagingAddress": {
+                "street": "123 Main St",
+                "city": "New York",
+                "state": "NY",
+                "zip": "10001"
+            },
+            "coverages": [
+                {
+                    "type": "Liability",
+                    "limit": 25000,
+                    "deductible": 500
+                },
+                {
+                    "type": "Collision",
+                    "limit": 25000,
+                    "deductible": 500
+                },
+                {
+                    "type": "Comprehensive",
+                    "limit": 25000,
+                    "deductible": 500
+                }
+            ]
+        }
+    ]
+}

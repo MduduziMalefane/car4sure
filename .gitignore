@@ -1,0 +1,9 @@
+.vs/*
+*.zip
+*.csv
+*.file
+data/logs/*.log
+data/cache/twig/*
+vendor/*
+data/files/gallery/*.webp
+module/scenevoid/*

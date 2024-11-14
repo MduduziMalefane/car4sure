@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<title>
+			{% block title %}{% endblock %}
+		</title>
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<meta name="description" content=""/>
+		<meta name="author" content="Neca Global"/>
+		<meta name="mobile-web-app-capable" content="yes"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<link rel="shortcut icon" href="/resource/img/Favicon-android3.png?res=1"/>
+		<link rel="apple-touch-icon" sizes="144x144" href="/resource/img/Favicon-android3.png?res=1"/>
+
+		<link rel="stylesheet" href="/resource/css/bootstrap.min.css"/>
+		<link rel="stylesheet" href="/resource/css/w3.css"/>
+		<link rel="stylesheet" href="/resource/css/style.css?v=20210329"/>
+		<link rel="stylesheet" href="/resource/css/all.css"/>
+		<link rel="stylesheet" href="/resource/css/justcontrol.css"/>
+
+		<link rel="stylesheet" href="/resource/css/dropzone.css"/>
+
+		<script type="application/javascript" src="/resource/js/validate.js"></script>
+		<script type="application/javascript" src="/resource/js/justjs.js"></script>
+		<script type="application/javascript" src="/resource/js/dropzone.js"></script>
+
+		<script type="application/javascript" src="/resource/js/sclist.js"></script>
+		<script type="application/javascript" src="/resource/js/scListTable.js"></script>
+		<script type="application/javascript" src="/resource/js/scListControl.js"></script>
+		<script type="application/javascript" src="/resource/js/axios.min.js"></script>
+
+		<script type="text/javascript" src="/resource/js/jquery.min.js"></script>
+		<script type="application/javascript" src="/resource/js/axios.min.js"></script>
+
+		{% block additional_head %}{% endblock %}
+	</head>
+
+	<body>
+		<div class="wrapper">
+
+			{% include "layout/header.twig" %}
+
+			<div class="page-content" style="overflow-x:scroll"> {% block content %}{% endblock %}
+				</div>
+
+				{% include "layout/footer.twig" %}
+
+			</div>
+			<div id="webmessage">
+				<div id="web_dialog" class="sc-web-dialog" style="display:none">
+					<div class="sc-web-dialog-window">
+						<div class="sc-web-dialog-title">
+							<div id="web_dialog_title" class='w3-center'>Message</div>
+						</div>
+
+						<div id="web_dialog_message" class="w3-padding w3-padding-16 w3-large w3-center"></div>
+
+						<div class="w3-padding w3-center">
+							<button class="sc-web-close w3-button neca-green w3-round-medium" winid="web_dialog">Close</button>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+			<div id="cookiemessage">
+				<div id="cookiemessage_dialog" class="sc-web-dialog" style="display:none">
+					<div class="sc-web-dialog-window">
+						<div class="sc-web-dialog-title">
+							<div class='w3-center'>We use cookies</div>
+						</div>
+
+						<div id="web_dialog_message" class="w3-padding w3-padding-16 w3-large w3-center">
+							<div class=" w3-left-align w3-large">We use cookies and other tracking technologies to
+																	improve your browsing
+																	experience on our website,
+																	to show you personalized content and targeted ads, to analyze our website traffic,
+																	and to understand where our visitors are coming from.</div>
+
+							<div class='w3-padding-16 w3-left-align w3-medium'>
+								We commonly use cookies to:
+								<ul>
+									<li>Preserves user session state across page requests.</li>
+									<li>Preserves users states across page requests.</li>
+									<li>Used to collect information for site navigational purposes.</li>
+									<li>Used for operational and service improvement purposes.</li>
+									<li>Contains a unique identifier derived from your TLC account and is used operational and
+																												site improvement purposes.</li>
+									<li>Used for operational and service improvement purposes.</li>
+								</ul>
+
+							</div>
+						</div>
+
+						<div class="w3-padding w3-center">
+							<button class="w3-button neca-green w3-round-medium" id="cookie_accept">Got it</button>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+			<div class="modal fade  message-close" id="messageModal" tabindex="-1">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header neca-green">
+							<h5 class="modal-title" id='messageTitle'></h5>
+							<button type="button" class="btn-close message-close w3-text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<p id='messageText'></p>
+						</div>
+						<div class="modal-footer w3-border-0">
+							<button type="button" class="btn btn-secondary message-close w3-hover-dark-gray" data-bs-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="modal fade" id="ConfirmModal" tabindex="-1">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header neca-green">
+							<h5 class="modal-title" id='ConfirmModalTitle'></h5>
+							<button type="button" class="btn-close w3-text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<p id='ConfirmModalText'></p>
+						</div>
+						<div class="modal-footer w3-border-0 w3-right-align">
+							<button id="ConfirmModalButtonClose" type="button" class="btn rbm-blue w3-hover-dark-gray" data-bs-dismiss="modal">Close</button>
+							<button id="ConfirmModalButtonOk" type="button" class="btn neca-green w3-hover-dark-gray" data-bs-dismiss="modal">Yes</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="modal" id="loadingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+				<div class="modal-dialog" style="margin-top:15%">
+					<div class="modal-content">
+						<div class="modal-body">
+							<div class="w3-center w3-padding w3-white">
+								<span class="neca-anim-fast-fade">
+									<img style="width:100%;max-width: 100px;" src="/resource/img/Main.png"/>
+									<br/>
+									<span id="loadingModalText">Please wait..</span>
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="webchat"></div>
+			<script type="application/javascript" src="/resource/js/justcontrol.js"></script>
+			<script type="application/javascript" src="/resource/js/bootstrap.bundle.min.js"></script>
+
+		</body>
+
+	</html>

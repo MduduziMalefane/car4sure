@@ -1,0 +1,1 @@
+rmdir data\cache\twig\ /s /q

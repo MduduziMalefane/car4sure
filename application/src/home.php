@@ -1,0 +1,3 @@
+<?php
+
+$siteRoute->renderView();

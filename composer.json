@@ -1,0 +1,19 @@
+{
+
+    "require": {
+        "phpmailer/phpmailer": "^6.1",
+        "mpdf/mpdf": "^8.0",
+        "setasign/fpdf": "^1.8",
+        "hashids/hashids": "^4.1",
+        "twig/twig": "^3.14"
+    },
+    "autoload": {
+        "classmap": [
+            "application/model",
+            "module/Authentication",
+            "module/Helper",
+            "module/Web",
+            "module/Security"
+        ]
+    }
+}

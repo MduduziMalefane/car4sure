@@ -1,0 +1,96 @@
+{% extends "layout/site.twig" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+            <h2>Welcome to your Policy Dashboard</h2>
+
+            {% if isFirstTimeUser %}
+            <div class="alert alert-info">
+                <strong>Welcome, please fill in your details to create your first policy!</strong>
+            </div>
+
+            <form method="POST" action="/create-policy">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Policy Details</h4>
+
+                        <div class="form-group">
+                            <label for="policyNo">Policy Number</label>
+                            <input type="text" class="form-control" id="policyNo" name="policyNo" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="policyType">Policy Type</label>
+                            <select class="form-control" id="policyType" name="policyType" required>
+                                <option value="Auto">Auto</option>
+                                <option value="Home">Home</option>
+                                <option value="Life">Life</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="policyEffectiveDate">Policy Effective Date</label>
+                            <input type="date" class="form-control" id="policyEffectiveDate" name="policyEffectiveDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="policyExpirationDate">Policy Expiration Date</label>
+                            <input type="date" class="form-control" id="policyExpirationDate" name="policyExpirationDate" required>
+                        </div>
+
+                        <h4>Policy Holder Information</h4>
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input type="text" class="form-control" id="firstName" name="firstName" required>
+                        </div>
+
+                        <!-- Add other fields here as before -->
+
+                        <button type="submit" class="btn btn-primary">Create Policy</button>
+                    </div>
+                </div>
+            </form>
+
+            {% else %}
+            <div class="alert alert-success">
+                <strong>Welcome back! You already have a policy.</strong>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Your Current Policy Details</h4>
+
+                    <!-- Display user's current policy details -->
+                    <p><strong>Policy Number:</strong> {{ userPolicy.policyNo }}</p>
+                    <p><strong>Policy Type:</strong> {{ userPolicy.policyType }}</p>
+                    <p><strong>Effective Date:</strong> {{ userPolicy.policyEffectiveDate }}</p>
+                    <p><strong>Expiration Date:</strong> {{ userPolicy.policyExpirationDate }}</p>
+
+                    <h4>Policy Holder Information</h4>
+                    <p><strong>Name:</strong> {{ userPolicy.firstName }} {{ userPolicy.lastName }}</p>
+                    <p><strong>Address:</strong> {{ userPolicy.addressStreet }}, {{ userPolicy.addressCity }}, {{ userPolicy.addressState }} {{ userPolicy.addressZip }}</p>
+
+                    <h4>Driver Information</h4>
+                    <p><strong>Driver's Name:</strong> {{ userPolicy.driverFirstName }} {{ userPolicy.driverLastName }}</p>
+
+                    <h4>Vehicle Information</h4>
+                    <p><strong>Vehicle Make:</strong> {{ userPolicy.vehicleMake }}</p>
+                    <p><strong>Vehicle Model:</strong> {{ userPolicy.vehicleModel }}</p>
+                    <p><strong>Vehicle VIN:</strong> {{ userPolicy.vehicleVIN }}</p>
+
+                    <h4>Coverage Details</h4>
+                    <p><strong>Coverage Type:</strong> {{ userPolicy.coverageType }}</p>
+                    <p><strong>Coverage Limit:</strong> {{ userPolicy.coverageLimit }}</p>
+                    <p><strong>Coverage Deductible:</strong> {{ userPolicy.coverageDeductible }}</p>
+
+                    <!-- Update and Delete buttons -->
+                    <form method="POST" action="/update-policy/{{ userPolicy.id }}">
+                        <button type="submit" class="btn btn-warning">Update Policy</button>
+                    </form>
+                    
+                    <form method="POST" action="/delete-policy/{{ userPolicy.id }}" onsubmit="return confirm('Are you sure you want to delete this policy?');">
+                        <button type="submit" class="btn btn-danger">Delete Policy</button>
+                    </form>
+                </div>
+            </div>
+
+            {% endif %}
+{% endblock %}
