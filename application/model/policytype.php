@@ -1,40 +1,42 @@
-namespace TLC\Application\Model;
+<?php
+namespace CAR4SURE\Application\Model;
 
-use PDO;
-use TLC\Application\Database;
 
 /**
  * Policyholder Model
  */
 class Policytype
 {
-    private int $policyTypeID;
+    private int $policyTypeId;
     private string $description;
+    private int $policyNo;
 
 
     public function __construct()
     {
-        $this->policyTypeID = 0;
+        $this->policyTypeId = 0;
         $this->description = '';
+        $this->policyNo = 0;
 
     }
-    public function getpolicyHolderID(): int
+   
+    public function getPolicyTypeId(): int
     {
-        return $this->id;
+        return $this->policyTypeId;
     }
 
     /**
-     * Set the value of policyHolderID
-     * @param int $policyHolderID
+     * Set the value of policyHolderId
+     * @param int $policyTypeId
      * @return self
      */
-    public function setpolicyHolderID(int $policyHolderID): self
+    public function setPolicyTypeId(int $policyTypeId): self
     {
-        $this->policyHolderID = $policyHolderID;
+        $this->policyTypeId = $policyTypeId;
         return $this;
     }
 
-    public function getdescription(): string
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -44,17 +46,34 @@ class Policytype
      * @param int $description
      * @return self
      */
-    public function setdescription(string $description): self
+    public function setDescription(string $description): self
     {
         $this->description = $description;
         return $this;
     }
+   
+    public function getPolicyNo(): int
+    {
+        return $this->policyNo;
+    }
+
+    /**
+     * Set the value of policyNo
+     * @param int $policyNo
+     * @return self
+     */
+    public function setPolicyNo(int $policyNo): self
+    {
+        $this->policyNo = $policyNo;
+        return $this;
+    }
+
     public function save(): bool
     {
-        if ($this->id == 0) {
-            return $this->savePolicytype();
+        if ($this->policyTypeId == 0) {
+            return $this->savePolicyType();
         } else {
-            return $this->updatePolicytype();
+            return $this->updatePolicyType();
         }
     }
 
@@ -62,14 +81,14 @@ class Policytype
      * Insert the bank
      * @return bool
      */
-    private function savePolicytype(): bool
+    private function savePolicyType(): bool
     {
         $con = new \MysqlClass();
         $query = "INSERT INTO policytype (description) VALUES (?, ?, ?);";
         $con->pushParam($this->description);
  
         if ($con->executeNoneQuery($query) > 0) {
-            $this->policyTypeID = $con->getLastInsertID();
+            $this->policyTypeID = $con->getLastInsertId();
             return true;
         }
 
@@ -80,7 +99,7 @@ class Policytype
      * Update the policytype
      * @return bool
      */
-    private function updatePolicytype(): bool
+    private function updatePolicyType(): bool
     {
         $con = new \MysqlClass();
         $query = "UPDATE policytype SET description = ? WHERE policyTypeID = ? AND Deleted = 0";
@@ -108,7 +127,7 @@ class Policytype
      * @param int $policyTypeID
      * @return policyType|null
      */
-    public static function getpolicyTypeById(int $policyTypeID): ?policyType
+    public static function getPolicyTypeById(int $policyTypeID): ?policyType
     {
         $con = new \MysqlClass();
         $query = "SELECT * FROM policytype WHERE Id = ? AND Deleted = 0 LIMIT 1";
@@ -116,7 +135,7 @@ class Policytype
         $result = $con->queryObject($query);
 
         if ($result) {
-            return self::mapPolicytype($result);
+            return self::map($result);
         }
 
         return null;
@@ -126,7 +145,7 @@ class Policytype
      * Get all policyType
      * @return array
      */
-    public static function getAllPolicytype(): array
+    public static function getAll(): array
     {
         $con = new \MysqlClass();
         $query = "SELECT * FROM policytype WHERE Deleted = 0";
@@ -136,7 +155,7 @@ class Policytype
 
         if ($Policytypes) {
             foreach ($Policytypes as $row) {
-                $result[] = self::mapPolicytype($row);
+                $result[] = self::map($row);
             }
         }
 
@@ -149,19 +168,20 @@ class Policytype
      */
     public static function getDisplay(): array
     {
-        $banks = self::getAllPolicytype();
+        $policyTypes = self::getAll();
         $result = [];
 
-        foreach ($Policytypes as $Policytype) {
-            $result[] = ["policytypeID" => $Policytype->getpolicytypeID(), "name" => $policyType->getdescription()];
+        foreach ($policyTypes as $policyType) {
+            $result[] = ["policytypeID" => $policyType->getpolicytypeID(), "name" => $policyType->getdescription()];
         }
 
         return $result;
     }
 
-    private static function mapPolicytype($Policytype): Policytype
+    private static function map($Policytype): Policytype
     {
         return (new self())
-            ->setPolicytypeID($Policytype->policyTypeID)
-            ->setfirstName($Policytype->description);
+            ->setPolicyTypeId($Policytype->policyTypeId)
+            ->setDescription($Policytype->description);
     }
+}

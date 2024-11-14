@@ -1,14 +1,13 @@
-namespace TLC\Application\Model;
+<?php
 
-use PDO;
-use TLC\Application\Database;
+namespace CAR4SURE\Application\Model;
 
 /**
- * Policyholder Model
+ * PolicyHolder Model
  */
-class Policyholder
+class PolicyHolder
 {
-    private int $policyHolderID;
+    private int $policyHolderId;
     private string $firstName;
     private string $lastName;
     private string $streetName;
@@ -18,16 +17,16 @@ class Policyholder
 
     public function __construct()
     {
-        $this->policyHolderID = 0;
+        $this->policyHolderId = 0;
         $this->firstName = '';
         $this->lastName = '';
         $this->city = '';
         $this->state = '';
         $this->zip = 0;
     }
-    public function getpolicyHolderID(): int
+    public function getPolicyHolderId(): int
     {
-        return $this->id;
+        return $this->policyHolderId;
     }
 
     /**
@@ -35,13 +34,13 @@ class Policyholder
      * @param int $Id
      * @return self
      */
-    public function setpolicyHolderID(int $policyHolderID): self
+    public function setPolicyHolderId(int $policyHolderId): self
     {
-        $this->policyHolderID = $policyHolderID;
+        $this->policyHolderId = $policyHolderId;
         return $this;
     }
 
-    public function getfirstName(): string
+    public function getFirstName(): string
     {
         return $this->firstName;
     }
@@ -51,13 +50,13 @@ class Policyholder
      * @param int $firstName
      * @return self
      */
-    public function setfirstName(string $firstName): self
+    public function setFirstName(string $firstName): self
     {
         $this->firstName = $firstName;
         return $this;
     }
 
-    public function getlastName(): string
+    public function getLastName(): string
     {
         return $this->lastName;
     }
@@ -67,13 +66,13 @@ class Policyholder
      * @param int $lastName
      * @return self
      */
-    public function setlastName(string $lastName): self
+    public function setLastName(string $lastName): self
     {
         $this->lastName = $lastName;
         return $this;
     }
 
-    public function getstreetName(): string
+    public function getStreetName(): string
     {
         return $this->streetName;
     }
@@ -83,13 +82,13 @@ class Policyholder
      * @param int $streetName
      * @return self
      */
-    public function setstreetName(string $streetName): self
+    public function setStreetName(string $streetName): self
     {
         $this->streetName = $streetName;
         return $this;
     }
 
-    public function getcity(): string
+    public function getCity(): string
     {
         return $this->city;
     }
@@ -99,13 +98,13 @@ class Policyholder
      * @param int $city
      * @return self
      */
-    public function setcity(string $city): self
+    public function setCity(string $city): self
     {
         $this->city = $city;
         return $this;
     }
 
-    public function getstate(): string
+    public function getState(): string
     {
         return $this->state;
     }
@@ -115,15 +114,15 @@ class Policyholder
      * @param int $state
      * @return self
      */
-    public function setstate(string $state): self
+    public function setState(string $state): self
     {
         $this->state = $state;
         return $this;
     }
 
-    public function getzip(): int
+    public function getZip(): int
     {
-        return $this->firstName;
+        return $this->zip;
     }
 
     /**
@@ -131,7 +130,7 @@ class Policyholder
      * @param int $zip
      * @return self
      */
-    public function setzip(int $zip): self
+    public function setZip(int $zip): self
     {
         $this->zip = $zip;
         return $this;
@@ -139,7 +138,7 @@ class Policyholder
 
     public function save(): bool
     {
-        if ($this->id == 0) {
+        if ($this->policyHolderId == 0) {
             return $this->savePolicyholder();
         } else {
             return $this->updatePolicyholder();
@@ -150,7 +149,7 @@ class Policyholder
      * Insert the bank
      * @return bool
      */
-    private function savePolicyholder(): bool
+    private function savePolicyHolder(): bool
     {
         $con = new \MysqlClass();
         $query = "INSERT INTO policyholder (firstName, lastName, streetName, city, state, zip,) VALUES (?, ?, ?);";
@@ -162,8 +161,8 @@ class Policyholder
         $con->pushParam($this->zip);
 
 
-        if ($con->executeNoneQuery_Safe($query) > 0) {
-            $this->id = $con->getLastInsertPolicyHolderID();
+        if ($con->executeNoneQuery($query) > 0) {
+            $this->policyHolderId = $con->getLastInsertId();
             return true;
         }
 
@@ -174,7 +173,7 @@ class Policyholder
      * Update the policyholder
      * @return bool
      */
-    private function updatePolicyholder(): bool
+    private function updatePolicyHolder(): bool
     {
         $con = new \MysqlClass();
         $query = "UPDATE bank SET firstName = ?, lastName = ?, streetName = ?, city = ?, state = ?, zip = ?, WHERE policyholderID = ? AND Deleted = 0";
@@ -184,9 +183,9 @@ class Policyholder
         $con->pushParam($this->city);
         $con->pushParam($this->state);
         $con->pushParam($this->zip);
-        $con->pushParam($this->policyholderID);
+        $con->pushParam($this->policyHolderId);
 
-        return $con->executeNoneQuery_Safe($query) > 0;
+        return $con->executeNoneQuery($query) > 0;
     }
 
     /**
@@ -194,13 +193,13 @@ class Policyholder
      * @param int $policyHolderID
      * @return bool
      */
-    public static function delete(int $policyHolderID): bool
+    public static function delete(int $policyHolderId): bool
     {
         $con = new \MysqlClass();
-        $query = "UPDATE policyholder SET Deleted = 1 WHERE Id = ?";
-        $con->pushParam($id);
+        $query = "UPDATE policyholder SET Deleted = 1 WHERE policyHolderID = ?";
+        $con->pushParam($policyHolderId);
 
-        return $con->executeNoneQuery_Safe($query) > 0;
+        return $con->executeNoneQuery($query) > 0;
     }
 
     /**
@@ -208,15 +207,15 @@ class Policyholder
      * @param int $policyHolderID
      * @return policyholder|null
      */
-    public static function getpolicyholderById(int $policyHolderID): ?policyholder
+    public static function getPolicyHolderById(int $policyHolderId): ?policyholder
     {
         $con = new \MysqlClass();
-        $query = "SELECT * FROM policyholder WHERE Id = ? AND Deleted = 0 LIMIT 1";
-        $con->pushParam($id);
-        $result = $con->queryObject_Safe($query);
+        $query = "SELECT * FROM policyholder WHERE policyHolderId = ? AND Deleted = 0 LIMIT 1";
+        $con->pushParam($policyHolderId);
+        $result = $con->queryObject($query);
 
         if ($result) {
-            return self::mapPolicyholder($result);
+            return self::map($result);
         }
 
         return null;
@@ -226,17 +225,17 @@ class Policyholder
      * Get all banks
      * @return array
      */
-    public static function getAllPolicyholders(): array
+    public static function getAll(): array
     {
         $con = new \MysqlClass();
         $query = "SELECT * FROM policyholder WHERE Deleted = 0";
         $result = [];
 
-        $Policyholders = $con->queryAllObject_Safe($query);
+        $Policyholders = $con->queryAllObject($query);
 
         if ($Policyholders) {
             foreach ($Policyholders as $row) {
-                $result[] = self::mapPolicyholder($row);
+                $result[] = self::map(policyHolder: $row);
             }
         }
 
@@ -249,24 +248,28 @@ class Policyholder
      */
     public static function getDisplay(): array
     {
-        $policyHolders = self::getAllPolicyholder();
+        // getAllPolicyHolder
+        $policyHolders = self::getAll();
         $result = [];
 
         foreach ($policyHolders as $policyHolder) {
-            $result[] = ["policyholderID" => $policyHolder->getpolicyHolderID(), "name" => $policyHolder->getpolicyHolderID()];
+            $result[] = ["policyholderId" => $policyHolder->getPolicyHolderId(), "name" => $policyHolder->getPolicyHolderId()];
         }
 
         return $result;
     }
+     
+    
 
-    private static function mapPolicyHolder($policyHolder): PolicyHolder
+    private static function map($policyHolder): PolicyHolder
     {
         return (new self())
-            ->setPolicyHolderID($PolicyHolder->policyHolderID)
-            ->setFirstName($Policyholder->firstName)
-            ->setLastName($Policyholder->lastName)
-            ->setStreetName($Policyholder->streetName)
-            ->setCity($Policyholder->city)
-            ->setState($Policyholder->state)
-            ->setZip($Policyholder->zip);
+            ->setPolicyHolderId($policyHolder->policyHolderID)
+            ->setFirstName($policyHolder->firstName)
+            ->setLastName($policyHolder->lastName)
+            ->setStreetName($policyHolder->streetName)
+            ->setCity($policyHolder->city)
+            ->setState($policyHolder->state)
+            ->setZip($policyHolder->zip);
     }
+}

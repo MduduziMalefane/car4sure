@@ -1,19 +1,20 @@
-namespace TLC\Application\Model;
+<?php
+namespace CAR4SURE\Application\Model;
 
-use PDO;
-use TLC\Application\Database;
+
 
 /**
- * Policyholder Model
+ * License Model
  */
 class License
 {
     private int $licenseNo;
     private string $licenseState;
     private string $licenseStatus;
-    private DateTime $licenseEffectiveDate;
-    private DateTime $licenseExpirationDate;
+    private \DateTime $licenseEffectiveDate;
+    private \DateTime $licenseExpirationDate;
     private string $licenseClass;
+    private int $userId;
 
 
     public function __construct()
@@ -21,11 +22,12 @@ class License
         $this->licenseNo = 0;
         $this->licenseState = '';
         $this->licenseStatus = '';
-        $this->licenseEffectiveDate = '';
-        $this->licenseExpirationDate = '';
+        $this->licenseEffectiveDate = new \DateTime();
+        $this->licenseExpirationDate = new \DateTime();
         $this->licenseClass = 0;
+        $this->userId = 0;
     }
-    public function getlicenseNo(): int
+    public function getLicenseNo(): int
     {
         return $this->licenseNo;
     }
@@ -35,13 +37,13 @@ class License
      * @param int $licenseNo
      * @return self
      */
-    public function setlicenseNo(int $licenseNo): self
+    public function setLicenseNo(int $licenseNo): self
     {
         $this->licenseNo = $licenseNo;
         return $this;
     }
 
-    public function getlicenseState(): string
+    public function getLicenseState(): string
     {
         return $this->licenseState;
     }
@@ -51,13 +53,13 @@ class License
      * @param int $licenseState
      * @return self
      */
-    public function setlicenseState(string $licenseState): self
+    public function setLicenseState(string $licenseState): self
     {
         $this->licenseState = $licenseState;
         return $this;
     }
 
-    public function getlicenseStatus(): string
+    public function getLicenseStatus(): string
     {
         return $this->licenseStatus;
     }
@@ -67,13 +69,13 @@ class License
      * @param int $licenseStatus
      * @return self
      */
-    public function setlicenseStatus(string $licenseStatus): self
+    public function setLicenseStatus(string $licenseStatus): self
     {
         $this->licenseStatus = $licenseStatus;
         return $this;
     }
 
-    public function getlicenseEffectiveDate(): new DateTime
+    public function getLicenseEffectiveDate(): \DateTime
     {
         return $this->licenseEffectiveDate;
     }
@@ -83,15 +85,21 @@ class License
      * @param int $licenseEffectiveDate
      * @return self
      */
-    public function setlicenseEffectiveDate(string $licenseEffectiveDate): self
+    public function setLicenseEffectiveDate($licenseEffectiveDate): self
     {
+        if (is_int($licenseEffectiveDate)) {
+            $licenseEffectiveDate = (new \DateTime())->setTimestamp($licenseEffectiveDate);
+        } elseif (!$licenseEffectiveDate instanceof \DateTime) {
+            throw new \InvalidArgumentException("Expected integer or DateTime for licenseEffectiveDate.");
+        }
+    
         $this->licenseEffectiveDate = $licenseEffectiveDate;
         return $this;
     }
 
-    public function getlicenseExpirationDate(): string
+    public function getLicenseExpirationDate(): \DateTime
     {
-        return $this->licenseExpirationDate(;
+        return $this->licenseExpirationDate;
     }
 
     /**
@@ -99,13 +107,21 @@ class License
      * @param int $licenseExpirationDate(
      * @return self
      */
-    public function setlicenseExpirationDate((string $licenseExpirationDate(): self
-    {
-        $this->licenseExpirationDate( = $licenseExpirationDate(;
-        return $this;
+    public function setLicenseExpirationDate($licenseExpirationDate): self
+{
+    if (is_int($licenseExpirationDate)) {
+        $licenseExpirationDate = (new \DateTime())->setTimestamp($licenseExpirationDate);
+    } elseif (is_string($licenseExpirationDate)) {
+        $licenseExpirationDate = new \DateTime($licenseExpirationDate);
+    } elseif (!$licenseExpirationDate instanceof \DateTime) {
+        throw new \InvalidArgumentException("Expected integer, string, or DateTime for licenseExpirationDate.");
     }
 
-    public function getlicenseClass(): string
+    $this->licenseExpirationDate = $licenseExpirationDate;
+    return $this;
+}
+
+    public function getLicenseClass(): string
     {
         return $this->licenseClass;
     }
@@ -115,17 +131,31 @@ class License
      * @param int $licenseClass
      * @return self
      */
-    public function setlicenseClass(string $licenseClass): self
+    public function setLicenseClass(string $licenseClass): self
     {
         $this->licenseClass = $licenseClass;
         return $this;
     }
 
-  
+    public function getUserID(): int
+    {
+        return $this->userId;
+    }
+
+    /**
+     * Set the value of userID
+     * @param int $userID
+     * @return self
+     */
+    public function setUserId(int $userID): self
+    {
+        $this->userID = $userID;
+        return $this;
+    }
 
     public function save(): bool
     {
-        if ($this->id == 0) {
+        if ($this->licenseNo == 0) {
             return $this->saveLicense();
         } else {
             return $this->updateLicense();
@@ -172,7 +202,7 @@ class License
         $con->pushParam($this->licenseClass);
         $con->pushParam($this->licenseNo);
 
-        return $con->executeNoneQuery_Safe($query) > 0;
+        return $con->executeNoneQuery($query) > 0;
     }
 
     /**
@@ -194,7 +224,7 @@ class License
      * @param int $licenseNo
      * @return license|null
      */
-    public static function getlicenseBylicenseNo(int $licenseNo): ?license
+    public static function getLicenseByLicenseNo(int $licenseNo): ?license
     {
         $con = new \MysqlClass();
         $query = "SELECT * FROM license WHERE licenseNo = ? AND Deleted = 0 LIMIT 1";
@@ -202,7 +232,7 @@ class License
         $result = $con->queryObject($query);
 
         if ($result) {
-            return self::mapLicense($result);
+            return self::map($result);
         }
 
         return null;
@@ -212,7 +242,7 @@ class License
      * Get all licenses
      * @return array
      */
-    public static function getAllLicenses(): array
+    public static function getAll(): array
     {
         $con = new \MysqlClass();
         $query = "SELECT * FROM license WHERE Deleted = 0";
@@ -222,7 +252,7 @@ class License
 
         if ($Licenses) {
             foreach ($Licenses as $row) {
-                $result[] = self::mapLicenses$row);
+                $result[] = self::map($row);
             }
         }
 
@@ -235,23 +265,24 @@ class License
      */
     public static function getDisplay(): array
     {
-        $banks = self::getAllPolicyholder();
+        $licenses = self::getAll();
         $result = [];
 
-        foreach ($Licenses as $licenses) {
+        foreach ($licenses as $license) {
             $result[] = ["licenseNo" => $license->getlicense(), "name" => $license->getlicenseState()];
         }
 
         return $result;
     }
 
-    private static function mapLicense($license): license
+    private static function map($license): license
     {
         return (new self())
-            ->setlicenseNo($License->licenseNo)
-            ->setfirstName($License->licenseState)
-            ->setlastName($License->licenseStatus)
-            ->setstreetName($License->licenseEffectiveDate)
-            ->setcity($License->licenseExpirationDate)
-            ->setstate($Policyholder->licenseClass);
+            ->setlicenseNo($license->licenseNo)
+            ->setlicenseState($license->licenseState)
+            ->setlicenseStatus($license->licenseStatus)
+            ->setlicenseEffectiveDate($license->licenseEffectiveDate)
+            ->setLicenseExpirationDate($license->licenseExpirationDate)
+            ->setLicenseClass($license->licenseClass);
     }
+}

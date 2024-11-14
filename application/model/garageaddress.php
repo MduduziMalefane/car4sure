@@ -1,30 +1,32 @@
-namespace TLC\Application\Model;
+<?php
+namespace CAR4SURE\Application\Model;
 
-use PDO;
-use TLC\Application\Database;
+
 
 /**
- * Policyholder Model
+ * GarageAddress Model
  */
 class GarageAddress
 {
-    private int $garageID;
+    private int $garageId;
     private string $streetName;
     private string $city;
     private string $state;
     private int $zip;
+    private int $plateID;
 
     public function __construct()
     {
-        $this->garageID = 0;
+        $this->garageId = 0;
         $this->streetName = '';
         $this->city = '';
         $this->state = '';
         $this->zip = 0;
+        $this->plateID = 0;
     }
-    public function getgarageID(): int
+    public function getGarageID(): int
     {
-        return $this->garageID;
+        return $this->garageId;
     }
 
     /**
@@ -32,13 +34,13 @@ class GarageAddress
      * @param int $garageID
      * @return self
      */
-    public function setgarageID(int $garageID): self
+    public function setGarageID(int $garageId): self
     {
-        $this->garageID = $garageID;
+        $this->garageId = $garageId;
         return $this;
     }
 
-    public function getstreetName(): string
+    public function getStreetName(): string
     {
         return $this->streetName;
     }
@@ -48,13 +50,13 @@ class GarageAddress
      * @param int $streetName
      * @return self
      */
-    public function setstreetName(string $streetName): self
+    public function setStreetName(string $streetName): self
     {
         $this->streetName = $streetName;
         return $this;
     }
 
-    public function getcity(): string
+    public function getCity(): string
     {
         return $this->city;
     }
@@ -64,42 +66,46 @@ class GarageAddress
      * @param int $city
      * @return self
      */
-    public function setcity(string $city): self
+    public function setCity(string $city): self
     {
         $this->city = $city;
         return $this;
     }
 
-    public function getcity(): string
-    {
-        return $this->city;
-    }
-
-    /**
-     * Set the value of city
-     * @param int $city
-     * @return self
-     */
-    public function setstate(string $state): self
+    public function setState(string $state): self
     {
         $this->state = $state;
         return $this;
     }
 
-    public function getzip(): int
+    public function getZip(): int
     {
         return $this->zip;
     }
-
+    public function setZip(int $zip): self
+    {
+        $this->zip = $zip;
+        return $this;
+    }
     /**
-     * Set the value of zip
-     * @param int $zip
+     * Set the value of plateID
+     * @param int $plateID
      * @return self
      */
-  
+     public function getplateID(): int
+    {
+        return $this->plateID;
+    }
+     public function setplateID(int $plateID): self
+    {
+        $this->plateID = $plateID;
+        return $this;
+    }
+
+    
     public function save(): bool
     {
-        if ($this->id == 0) {
+        if ($this->garageId == 0) {
             return $this->saveGarageAddress();
         } else {
             return $this->updateGarageAddress();
@@ -118,6 +124,7 @@ class GarageAddress
         $con->pushParam($this->city);
         $con->pushParam($this->state);
         $con->pushParam($this->zip);
+        $con->pushParam($this->plateID);
 
 
         if ($con->executeNoneQuery($query) > 0) {
@@ -140,7 +147,8 @@ class GarageAddress
         $con->pushParam($this->city);
         $con->pushParam($this->state);
         $con->pushParam($this->zip);
-        $con->pushParam($this->garageID);
+        $con->pushParam($this->garageId);
+        $con->pushParam($this->plateID);
 
         return $con->executeNoneQuery($query) > 0;
     }
@@ -153,7 +161,7 @@ class GarageAddress
     public static function delete(int $garageID): bool
     {
         $con = new \MysqlClass();
-        $query = "UPDATE garage SET Deleted = 1 WHERE garageID = ?";
+        $query = "UPDATE garageaddress SET Deleted = 1 WHERE garageID = ?";
         $con->pushParam($garageID);
 
         return $con->executeNoneQuery($query) > 0;
@@ -162,9 +170,9 @@ class GarageAddress
     /**
      * Get the garageAddress by garageID
      * @param int $garageID
-     * @return garage|null
+     * @return |null
      */
-    public static function getgarageaddressBygarageID(int $garageID): ?garageaddress
+    public static function getGarageAddressByGarageId(int $garageID): ?garageaddress
     {
         $con = new \MysqlClass();
         $query = "SELECT * FROM garageaddress WHERE garageID = ? AND Deleted = 0 LIMIT 1";
@@ -182,7 +190,7 @@ class GarageAddress
      * Get all garageaddresses
      * @return array
      */
-    public static function getAllGarageAddresses(): array
+    public static function getAll(): array
     {
         $con = new \MysqlClass();
         $query = "SELECT * FROM garageaddress WHERE Deleted = 0";
@@ -190,8 +198,8 @@ class GarageAddress
 
         $GarageAddress = $con->queryAllObject($query);
 
-        if ($GarageAddresses) {
-            foreach ($GarageAddresses as $row) {
+        if ($GarageAddress) {
+            foreach ($GarageAddress as $row) {
                 $result[] = self::mapGarageAddress($row);
             }
         }
@@ -205,11 +213,11 @@ class GarageAddress
      */
     public static function getDisplay(): array
     {
-        $garageaddresses = self::getAllGarageAddress();
+        $garageaddresses = self::getAll();
         $result = [];
 
-        foreach ($GarageAddresses as $GarageAddress) {
-            $result[] = ["garageID" => $garageID->getgarageID(), "name" => $garageaddress->getyear()];
+        foreach ($garageaddresses as $garageaddress) {
+            $result[] = ["garageID" => $garageaddress->getgarageID(), "name" => $garageaddress->getyear()];
         }
 
         return $result;
@@ -218,9 +226,11 @@ class GarageAddress
     private static function mapGarageAddress($garageAddress): garageAddress
     {
         return (new self())
-            ->setgarageID($garageAddress->garageID)
-            ->setyear($garageAddress->year)
-            ->setlastName($garageAddress->city)
-            ->setstreetName($garageAddress->state)
-            ->setzip($garageAddress->zip);
+            ->setGarageID($garageAddress->garageID)
+            ->setStreetName($garageAddress->streetName)
+            ->setCity($garageAddress->city)
+            ->setState($garageAddress->state)
+            ->setZip($garageAddress->zip)
+            ->setPlateID($garageAddress->plateID);
     }
+}

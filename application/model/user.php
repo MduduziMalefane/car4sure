@@ -1,14 +1,13 @@
-namespace TLC\Application\Model;
+<?php
+namespace CAR4SURE\Application\Model;
 
-use PDO;
-use TLC\Application\Database;
 
 /**
- * Policyholder Model
+ * User Model
  */
 class User
 {
-    private int $userID;
+    private int $userId;
     private string $firstName;
     private string $lastName;
     private int $age;
@@ -18,30 +17,30 @@ class User
 
     public function __construct()
     {
-        $this->userID = 0;
+        $this->userId = 0;
         $this->firstName = '';
         $this->lastName = '';
         $this->gender = '';
         $this->martialStatus = '';
         $this->age = 0;
     }
-    public function getuserID(): int
+    public function getuserId(): int
     {
-        return $this->userID;
+        return $this->userId;
     }
 
     /**
-     * Set the value of userID
-     * @param int $userID
+     * Set the value of userId
+     * @param int $userId
      * @return self
      */
-    public function setuserID(int $userID): self
+    public function setuserId(int $userId): self
     {
-        $this->userID = $userID;
+        $this->userId = $userId;
         return $this;
     }
 
-    public function getfirstName(): string
+    public function getFirstName(): string
     {
         return $this->firstName;
     }
@@ -51,13 +50,13 @@ class User
      * @param int $firstName
      * @return self
      */
-    public function setfirstName(string $firstName): self
+    public function setFirstName(string $firstName): self
     {
         $this->firstName = $firstName;
         return $this;
     }
 
-    public function getlastName(): string
+    public function getLastName(): string
     {
         return $this->lastName;
     }
@@ -67,13 +66,13 @@ class User
      * @param int $lastName
      * @return self
      */
-    public function setlastName(string $lastName): self
+    public function setLastName(string $lastName): self
     {
         $this->lastName = $lastName;
         return $this;
     }
 
-    public function getage(): int
+    public function getAge(): int
     {
         return $this->age;
     }
@@ -83,13 +82,13 @@ class User
      * @param int $age
      * @return self
      */
-    public function setage(string $age): self
+    public function setAge(string $age): self
     {
         $this->age = $age;
         return $this;
     }
 
-    public function getgender(): string
+    public function getGender(): string
     {
         return $this->gender;
     }
@@ -99,15 +98,15 @@ class User
      * @param int $gender
      * @return self
      */
-    public function setgender(string $gender): self
+    public function setGender(string $gender): self
     {
         $this->gender = $gender;
         return $this;
     }
 
-    public function getmartialStatus(): string
+    public function getMartialStatus(): string
     {
-        return $this->state;
+        return $this->martialStatus;
     }
 
     /**
@@ -115,7 +114,7 @@ class User
      * @param int $martialStatus
      * @return self
      */
-    public function setmartialStatus(string $martialStatus): self
+    public function setMartialStatus(string $martialStatus): self
     {
         $this->state = $martialStatus;
         return $this;
@@ -123,7 +122,7 @@ class User
 
     public function save(): bool
     {
-        if ($this->userID == 0) {
+        if ($this->userId == 0) {
             return $this->saveUser();
         } else {
             return $this->updateUser();
@@ -145,7 +144,7 @@ class User
         $con->pushParam($this->martialStatus);
 
         if ($con->executeNoneQuery($query) > 0) {
-            $this->userID = $con->getLastInsertID();
+            $this->userId = $con->getLastInsertID();
             return true;
         }
 
@@ -159,45 +158,45 @@ class User
     private function updateuser(): bool
     {
         $con = new \MysqlClass();
-        $query = "UPDATE user SET firstName = ?, lastName = ?, age = ?, gender = ?, martialStatus = ? WHERE userID = ? AND Deleted = 0";
+        $query = "UPDATE user SET firstName = ?, lastName = ?, age = ?, gender = ?, martialStatus = ? WHERE userId = ? AND Deleted = 0";
         $con->pushParam($this->firstName);
         $con->pushParam($this->lastName);
         $con->pushParam($this->age);
         $con->pushParam($this->gender);
         $con->pushParam($this->martialStatus);
-        $con->pushParam($this->userID);
+        $con->pushParam($this->userId);
 
         return $con->executeNoneQuery($query) > 0;
     }
 
     /**
      * Delete the user
-     * @param int $userID
+     * @param int $userId
      * @return bool
      */
-    public static function delete(int $userID): bool
+    public static function delete(int $userId): bool
     {
         $con = new \MysqlClass();
-        $query = "UPDATE user SET Deleted = 1 WHERE userID = ?";
-        $con->pushParam($userID);
+        $query = "UPDATE user SET Deleted = 1 WHERE userId = ?";
+        $con->pushParam($userId);
 
         return $con->executeNoneQuery($query) > 0;
     }
 
     /**
-     * Get the policyholder by userID
-     * @param int $userID
+     * Get the policyholder by userId
+     * @param int $userId
      * @return policyholder|null
      */
-    public static function getuserrByuserID(int $userID): ?user
+    public static function getuserrByuserId(int $userId): ?user
     {
         $con = new \MysqlClass();
-        $query = "SELECT * FROM user WHERE userID = ? AND Deleted = 0 LIMIT 1";
-        $con->pushParam($userID);
+        $query = "SELECT * FROM user WHERE userId = ? AND Deleted = 0 LIMIT 1";
+        $con->pushParam($userId);
         $result = $con->queryObject($query);
 
         if ($result) {
-            return self::mapUser($result);
+            return self::map($result);
         }
 
         return null;
@@ -207,7 +206,7 @@ class User
      * Get all users
      * @return array
      */
-    public static function getAllusers(): array
+    public static function getAll(): array
     {
         $con = new \MysqlClass();
         $query = "SELECT * FROM user WHERE Deleted = 0";
@@ -215,9 +214,9 @@ class User
 
         $Policyholders = $con->queryAllObject($query);
 
-        if ($users) {
-            foreach ($users as $row) {
-                $result[] = self::mapUser($row);
+        if ($result) {
+            foreach ($result as $row) {
+                $result[] = self::map($row);
             }
         }
 
@@ -230,23 +229,24 @@ class User
      */
     public static function getDisplay(): array
     {
-        $users = self::getAllUser();
+        $users = self::getAll();
         $result = [];
 
         foreach ($users as $user) {
-            $result[] = ["userID" => $user->getuserID(), "name" => $user->getfirstame()];
+            $result[] = ["userId" => $user->getuserId(), "name" => $user->getfirstame()];
         }
 
         return $result;
     }
 
-    private static function mapUser($user): user
+    private static function map($user): user
     {
         return (new self())
-            ->setuserID($user->userID)
+            ->setuserId($user->userId)
             ->setfirstName($user->firstName)
             ->setlastName($user->lastName)
             ->setage($user->age)
             ->setgender($user->gender)
-            ->setmartialStatus($user->state)
+            ->setmartialStatus($user->state);
     }
+}

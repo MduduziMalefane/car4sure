@@ -1,28 +1,30 @@
-namespace TLC\Application\Model;
+<?php
+namespace CAR4SURE\Application\Model;
 
-use PDO;
-use TLC\Application\Database;
+
 
 /**
- * Policyholder Model
+ * Coverage Model
  */
 class Coverage
 {
-    private int $coverageID;
+    private int $coverageId;
     private string $type;
     private int $limit;
     private int $deductible;
+    private int $policyNo;
 
     public function __construct()
     {
         $this->coverageID = 0;
         $this->type = '';
-        $this->limit = '';
-        $this->deductible = '';
+        $this->limit = 0;
+        $this->deductible = 0;
+        $this->policyNo = 0;
     }
-    public function getcoverageID(): int
+    public function getCoverageId(): int
     {
-        return $this->coverageID;
+        return $this->coverageId;
     }
 
     /**
@@ -30,13 +32,13 @@ class Coverage
      * @param int $coverageID
      * @return self
      */
-    public function setcoverageID(int $coverageID): self
+    public function setCoverageId(int $coverageID): self
     {
         $this->coverageID = $coverageID;
         return $this;
     }
 
-    public function gettype(): string
+    public function getType(): string
     {
         return $this->type;
     }
@@ -46,13 +48,13 @@ class Coverage
      * @param int $type
      * @return self
      */
-    public function settype(int $type): self
+    public function setType(int $type): self
     {
         $this->type = $type;
         return $this;
     }
 
-    public function getlimit(): int
+    public function getLimit(): int
     {
         return $this->limit;
     }
@@ -62,13 +64,13 @@ class Coverage
      * @param int $limit
      * @return self
      */
-    public function setlimit(int $limit): self
+    public function setLimit(int $limit): self
     {
         $this->limit = $limit;
         return $this;
     }
 
-    public function getdeductible(): int
+    public function getDeductible(): int
     {
         return $this->deductible;
     }
@@ -78,16 +80,30 @@ class Coverage
      * @param int $deductible
      * @return self
      */
-    public function setdeductible(string $deductible): self
+    public function setDeductible(string $deductible): self
     {
         $this->deductible = $deductible;
         return $this;
     }
+    public function getPolicyNo(): int
+    {
+        return $this->policyNo;
+    }
 
+    /**
+     * Set the value of coverageID
+     * @param int $coverageID
+     * @return self
+     */
+    public function setPolicyNo(int $policyNo): self
+    {
+        $this->policyNo = $policyNo;
+        return $this;
+    }
   
     public function save(): bool
     {
-        if ($this->id == 0) {
+        if ($this->coverageId == 0) {
             return $this->saveCoverage();
         } else {
             return $this->updateCoverage();
@@ -107,7 +123,7 @@ class Coverage
         $con->pushParam($this->deductible);
 
         if ($con->executeNoneQuery($query) > 0) {
-            $this->coverageID = $con->getLastID();
+            $this->coverageID = $con->getLastInsertId();
             return true;
         }
 
@@ -125,7 +141,7 @@ class Coverage
         $con->pushParam($this->type);
         $con->pushParam($this->limit);
         $con->pushParam($this->deductible);
-        $con->pushParam($this->coverageID);
+        $con->pushParam($this->coverageId);
 
         return $con->executeNoneQuery($query) > 0;
     }
@@ -135,7 +151,7 @@ class Coverage
      * @param int $coverageIDID
      * @return bool
      */
-    public static function delete(int $covergaeID): bool
+    public static function delete(int $coverageID): bool
     {
         $con = new \MysqlClass();
         $query = "UPDATE coverage SET Deleted = 1 WHERE coverageID = ?";
@@ -149,7 +165,7 @@ class Coverage
      * @param int $coverageIDID
      * @return coverage|null
      */
-    public static function getcoveragerBycoverageID(int $coverageID): ?policyholder
+    public static function getCoverageByCoverageId(int $coverageID): ?Coverage
     {
         $con = new \MysqlClass();
         $query = "SELECT * FROM coverage WHERE coverageID = ? AND Deleted = 0 LIMIT 1";
@@ -157,7 +173,7 @@ class Coverage
         $result = $con->queryObject($query);
 
         if ($result) {
-            return self::mapCoverage($result);
+            return self::map($result);
         }
 
         return null;
@@ -167,7 +183,7 @@ class Coverage
      * Get all coverages
      * @return array
      */
-    public static function getAllCoverages(): array
+    public static function getAll(): array
     {
         $con = new \MysqlClass();
         $query = "SELECT * FROM coverage WHERE Deleted = 0";
@@ -177,7 +193,7 @@ class Coverage
 
         if ($Coverages) {
             foreach ($Coverages as $row) {
-                $result[] = self::mapCoverage($row);
+                $result[] = self::map($row);
             }
         }
 
@@ -190,21 +206,22 @@ class Coverage
      */
     public static function getDisplay(): array
     {
-        $banks = self::getAllCoverage();
+        $Coverages = self::getAll();
         $result = [];
 
         foreach ($Coverages as $Coverage) {
-            $result[] = ["coverageID" => $Coverage->getcoverageID(), "name" => $coverage->gettype()];
+            $result[] = ["coverageID" => $Coverage->getcoverageID(), "name" => $Coverage->gettype()];
         }
 
         return $result;
     }
 
-    private static function mapCoverage($Coverage): Coverage
+    private static function map($data): Coverage
     {
         return (new self())
-            ->setcoverageID($Coverage->coverageID)
-            ->settype($Coverage->type)
-            ->setlimit($Coverage->limit)
-            ->setdeductible($Coverage->deductible);
+            ->setcoverageID($data->coverageID)
+            ->settype($data->type)
+            ->setlimit($data->limit)
+            ->setdeductible($data->deductible);
     }
+}

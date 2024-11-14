@@ -1,8 +1,5 @@
-namespace TLC\Application\Model;
-
-use PDO;
-use TLC\Application\Database;
-
+<?php
+namespace CAR4SURE\Application\Model;
 /**
  * Vehicle Model
  */
@@ -15,22 +12,24 @@ class Vehicle
     private int $vin;
     private string $usage;
     private string $primaryUse;
-    private int $annualMilage;
+    private int $annualMileage;
     private string $ownership;
+    private int $userId;
 
     public function __construct()
     {
         $this->plateID = 0;
-        $this->year = '';
+        $this->year = 0;
         $this->make = '';
         $this->model = '';
         $this->vin = 0;
         $this->usage = '';
         $this->primaryUse = '';
-        $this->annualMilage = 0;
+        $this->annualMileage = 0;
         $this->ownership = '';
+        $this->userId = 0;
     }
-    public function getplateID(): int
+    public function getPlateID(): int
     {
         return $this->plateID;
     }
@@ -40,13 +39,13 @@ class Vehicle
      * @param int $plateID
      * @return self
      */
-    public function setplateID(int $plateID): self
+    public function setPlateID(int $plateID): self
     {
         $this->plateID = $plateID;
         return $this;
     }
 
-    public function getyear(): int
+    public function getYear(): int
     {
         return $this->year;
     }
@@ -56,45 +55,30 @@ class Vehicle
      * @param int $year
      * @return self
      */
-    public function setyear(string $year): self
+    public function setYear(int $year): self
     {
-        $this->firstName = $year;
+        $this->year = $year;
         return $this;
     }
 
-    public function getmake(): string
+    public function getMake(): string
     {
         return $this->make;
     }
+
 
     /**
      * Set the value of make
      * @param int $make
      * @return self
      */
-    public function setmake(string $make): self
+    public function setMake(string $make): self
     {
         $this->make = $make;
         return $this;
     }
 
-    public function getmake(): string
-    {
-        return $this->make;
-    }
-
-    /**
-     * Set the value of make
-     * @param int $make
-     * @return self
-     */
-    public function setmake(string $make): self
-    {
-        $this->make = $make;
-        return $this;
-    }
-
-    public function getmodel(): string
+    public function getModel(): string
     {
         return $this->model;
     }
@@ -104,13 +88,13 @@ class Vehicle
      * @param int $model
      * @return self
      */
-    public function setmodel(string $model): self
+    public function setModel(string $model): self
     {
         $this->model = $model;
         return $this;
     }
 
-    public function getvin(): int
+    public function getVin(): int
     {
         return $this->vin;
     }
@@ -120,13 +104,13 @@ class Vehicle
      * @param int $vin
      * @return self
      */
-    public function setvin(int $vin): self
+    public function setVin(int $vin): self
     {
         $this->vin = $vin;
         return $this;
     }
 
-    public function usage(): string
+    public function getUsage(): string
     {
         return $this->usage;
     }
@@ -136,19 +120,86 @@ class Vehicle
      * @param int $usage
      * @return self
      */
-    public function setusage(int $usage): self
+    public function setUsage(int $usage): self
     {
         $this->usage = $usage;
         return $this;
     }
+    public function getPrimaryUse(): string
+    {
+        return $this->usage;
+    }
+
+    /**
+     * Set the value of usage
+     * @param int $usage
+     * @return self
+     */
+    public function setPrimaryUse(string $primaryUse): self
+    {
+        $this->primaryUse = $primaryUse;
+        return $this;
+    }
+
+    public function getAnnualMileage(): int
+    {
+        return $this->annualMileage;
+    }
+
+    /**
+     * Set the value of usage
+     * @param int $annualMileage
+     * @return self
+     */
+    public function setAnnualMileage(int $annualMileage): self
+    {
+        $this->annualMileage = $annualMileage;
+        return $this;
+    }
+
+    public function getOwnership(): string
+    {
+        return $this->ownership;
+    }
+
+    /**
+     * Set the value of usage
+     * @param int $ownership
+     * @return self
+     */
+    public function setOwnership(int $ownership): self
+    {
+        $this->ownership = $ownership;
+        return $this;
+    }
+
 
     public function save(): bool
     {
-        if ($this->plateID == 0) {
+        if ($this->plateID == 0)
+        {
             return $this->saveVehicle();
-        } else {
+        }
+        else
+        {
             return $this->updateVehicle();
         }
+    }
+
+    public function getuserId(): int
+    {
+        return $this->userId;
+    }
+
+    /**
+     * Set the value of year
+     * @param int $year
+     * @return self
+     */
+    public function setuserId(int $userId): self
+    {
+        $this->userId = $userId;
+        return $this;
     }
 
     /**
@@ -165,12 +216,13 @@ class Vehicle
         $con->pushParam($this->vin);
         $con->pushParam($this->usage);
         $con->pushParam($this->primaryUse);
-        $con->pushParam($this->annualMilage);
+        $con->pushParam($this->annualMileage);
         $con->pushParam($this->ownership);
 
 
-        if ($con->executeNoneQuery($query) > 0) {
-            $this->plateID = $con->getLastInsertID();
+        if ($con->executeNoneQuery($query) > 0)
+        {
+            $this->plateID = $con->getLastInsertId();
             return true;
         }
 
@@ -191,7 +243,7 @@ class Vehicle
         $con->pushParam($this->vin);
         $con->pushParam($this->usage);
         $con->pushParam($this->primaryUse);
-        $con->pushParam($this->annualMilage);
+        $con->pushParam($this->annualMileage);
         $con->pushParam($this->ownership);
 
         return $con->executeNoneQuery($query) > 0;
@@ -216,15 +268,16 @@ class Vehicle
      * @param int $plateID
      * @return vehicle|null
      */
-    public static function getvehicleByplateID(int $plateID): ?vehicle
+    public static function getVehicleByPlateId(int $plateID): ?vehicle
     {
         $con = new \MysqlClass();
         $query = "SELECT * FROM vehicle WHERE plateID = ? AND Deleted = 0 LIMIT 1";
         $con->pushParam($plateID);
         $result = $con->queryObject($query);
 
-        if ($result) {
-            return self::mapVehilce($result);
+        if ($result)
+        {
+            return self::map($result);
         }
 
         return null;
@@ -234,17 +287,19 @@ class Vehicle
      * Get all vehicles
      * @return array
      */
-    public static function getAllVehicles(): array
+    public static function getAll(): array
     {
         $con = new \MysqlClass();
         $query = "SELECT * FROM vehicle WHERE Deleted = 0";
         $result = [];
 
-        $Policyholders = $con->queryAllObject($query);
+        $result = $con->queryAllObject($query);
 
-        if ($Vehicles) {
-            foreach ($Vehicles as $row) {
-                $result[] = self::mapVehicle($row);
+        if ($result)
+        {
+            foreach ($result as $row)
+            {
+                $result[] = self::map($row);
             }
         }
 
@@ -257,26 +312,28 @@ class Vehicle
      */
     public static function getDisplay(): array
     {
-        $vehicle = self::getAllVehicles();
+        $vehicles = self::getAll();
         $result = [];
 
-        foreach ($Vehicles as $Vehicle) {
-            $result[] = ["plateID" => $vehicle->getplateID(), "name" => $vehicle->getyear()];
+        foreach ($vehicles as $vehicle)
+        {
+            $result[] = ["plateID" => $vehicle->getPlateID(), "name" => $vehicle->getyear()];
         }
 
         return $result;
     }
 
-    private static function mapVehicle($Vehicle): Vehicle
+    private static function map($data): Vehicle
     {
         return (new self())
-            ->setplateID($Vehicle->plateID)
-            ->setyear($Vehicle->year)
-            ->setlastName($Vehicle->make)
-            ->setstreetName($Vehicle->model)
-            ->setcity($Vehicle->vin)
-            ->setstate($Vehicle->usage)
-            ->setzip($Vehicle->primaryUse)
-            ->setzip($Vehicle->annualMilage)
-            ->setzip($Vehicle->ownership);
+            ->setPlateId($data->plateID)
+            ->setYear($data->year)
+            ->setMake($data->make)
+            ->setModel($data->model)
+            ->setVin($data->vin)
+            ->setUsage($data->usage)
+            ->setPrimaryUse($data->primaryUse)
+            ->setAnnualMileage($data->annualMileage)
+            ->setOwnership($data->ownership);
     }
+}

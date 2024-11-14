@@ -1,7 +1,6 @@
-namespace TLC\Application\Model;
+<?php
 
-use PDO;
-use TLC\Application\Database;
+namespace CAR4SURE\Application\Model;
 
 /**
  * Policyholder Model
@@ -11,8 +10,8 @@ class Policy
     private int $policyNo;
     private string $policyStatus;
     private string $policyType;
-    private DateTime $policyEffectiveDate;
-    private DateTime $policyExpirationDate;
+    private \DateTime $policyEffectiveDate;
+    private \DateTime $policyExpirationDate;
     private int $policyholderID;
     private int $deleted;
   
@@ -21,50 +20,50 @@ class Policy
     {
         $this->policyNo = 0;
         $this->policyStatus = '';
-        $this->policyEffectiveDate = new DateTime(); // Initialize to the current date and time
-        $this->policyExpirationDate = new DateTime();
+        $this->policyEffectiveDate = new \DateTime(); // Initialize to the current date and time
+        $this->policyExpirationDate = new \DateTime();
         $this->policyholderID = 0;
     }
 
-    public function getpolicyNo(): int
+    public function getPolicyNo(): int
     {
         return $this->policyNo;
     }
 
-    public function setpolicyNo(int $policyNo): self
+    public function setPolicyNo(int $policyNo): self
     {
-        $this->id = $policyNo;
+        $this->policyNo = $policyNo;
         return $this;
     }
 
-    public function getpolicyStatus(): string
+    public function getPolicyStatus(): string
     {
         return $this->policyNo;
     }
 
-    public function setpolicyStatus(string $policyStatus): self
+    public function setPolicyStatus(string $policyStatus): self
     {
-        $this->id = $policyStatus;
+        $this->policyStatus = $policyStatus;
         return $this;
     }
-    public function getpolicyEffectiveDate(): new DateTime
+    public function getPolicyEffectiveDate(): \DateTime
     {
         return $this->policyEffectiveDate;
     }
 
-    public function setpolicyEffectiveDate(\ DateTime $policyEffectiveDate): self
+    public function setPolicyEffectiveDate(\DateTime $policyEffectiveDate): self
     {
-        $this->policyNo = $policyEffectiveDate;
+        $this->policyEffectiveDate = $policyEffectiveDate;
         return $this;
     }
-    public function getpolicyExpirationDate(): \DateTime
+    public function getPolicyExpirationDate(): \DateTime
     {
         return $this->policyExpirationDate;
     }
 
-    public function setpolicyExpirationDate(\DateTime $policyExpirationDate): self
+    public function setPolicyExpirationDate(\DateTime $policyExpirationDate): self
     {
-        $this->policyNo = $policyExpirationDate;
+        $this->policyExpirationDate = $policyExpirationDate;
         return $this;
     }
     public function save(): bool
@@ -132,7 +131,7 @@ class Policy
      * @param int $policyNo
      * @return policy|null
      */
-    public static function getpolicyByPolicyNo(int $policyNo): ?policy
+    public static function getPolicyByPolicyNo(int $policyNo): ?policy
     {
         $con = new \MysqlClass();
         $query = "SELECT * FROM policy WHERE Id = ? AND Deleted = 0 LIMIT 1";
@@ -140,7 +139,7 @@ class Policy
         $result = $con->queryObject($query);
 
         if ($result) {
-            return self::mapPolicy($result);
+            return self::map($result);
         }
 
         return null;
@@ -150,17 +149,17 @@ class Policy
      * Get all policies
      * @return array
      */
-    public static function getAllPolicies(): array
+    public static function getAll(): array
     {
         $con = new \MysqlClass();
         $query = "SELECT * FROM policy WHERE Deleted = 0";
         $result = [];
 
-        $Policies = $con->queryAllObject_Safe($query);
+        $Policies = $con->queryAllObject($query);
 
         if ($Policies) {
             foreach ($Policies as $row) {
-                $result[] = self::mapPolicy($row);
+                $result[] = self::map($row);
             }
         }
 
@@ -173,22 +172,41 @@ class Policy
      */
     public static function getDisplay(): array
     {
-        $policies = self::getAllPolicy();
+        $policies = self::getAll();
         $result = [];
 
-        foreach ($Policies as $Policy) {
-            $result[] = ["policyNo" => $Policy->getpolicyNo(), "name" => $policy->getpolicyStatus()];
+        foreach ($policies as $policy) {
+            $result[] = ["policyNo" => $policy->getpolicyNo(), "name" => $policy->getpolicyStatus()];
         }
 
         return $result;
     }
 
-    private static function mapPolicyNo($Policy): Policy
+    public static function getByPolicyHolderId(int $policyholderID){
+        $con = new \MysqlClass();
+        $query = "SELECT * FROM policyholder WHERE policyHolderID = ? AND Deleted = 0 LIMIT 1";
+        $con->pushParam($policyholderID);
+        $result = $con->queryObject($query);
+
+        if ($result) {
+            return self::map($result);
+        }
+
+        return null;
+    
+    
+    }
+
+
+
+
+    private static function map($Policy): Policy
     {
         return (new self())
             ->setPolicyNo($Policy->PolicyNo)
-            ->setpolicyStatus($Policy->firstName)
-            ->setpolicyEffectiveDate($Policy->lastName)
-            ->setpolicyExpirationDate($Policy->streetName);
+            ->setPolicyStatus($Policy->firstName)
+            ->setPolicyEffectiveDate($Policy->lastName)
+            ->setPolicyExpirationDate($Policy->streetName);
           
     }
+}
