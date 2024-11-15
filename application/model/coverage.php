@@ -1,227 +1,233 @@
 <?php
-namespace CAR4SURE\Application\Model;
 
+namespace Care4Sure\Application\Model;
 
-
-/**
- * Coverage Model
- */
 class Coverage
 {
     private int $coverageId;
-    private string $type;
-    private int $limit;
-    private int $deductible;
-    private int $policyNo;
+    private string $coverageName;
+    private string $coverageDescription;
+    private bool $deleted;
 
     public function __construct()
     {
-        $this->coverageID = 0;
-        $this->type = '';
-        $this->limit = 0;
-        $this->deductible = 0;
-        $this->policyNo = 0;
+        $this->coverageId = 0;
+        $this->coverageName = '';
+        $this->coverageDescription = '';
+        $this->deleted = false;
     }
+
     public function getCoverageId(): int
     {
         return $this->coverageId;
     }
 
-    /**
-     * Set the value of coverageID
-     * @param int $coverageID
-     * @return self
-     */
-    public function setCoverageId(int $coverageID): self
+    public function setCoverageId(int $coverageId): self
     {
-        $this->coverageID = $coverageID;
+        $this->coverageId = $coverageId;
         return $this;
     }
 
-    public function getType(): string
+    public function getCoverageName(): string
     {
-        return $this->type;
+        return $this->coverageName;
     }
 
-    /**
-     * Set the value of type
-     * @param int $type
-     * @return self
-     */
-    public function setType(int $type): self
+    public function setCoverageName(string $coverageName): self
     {
-        $this->type = $type;
+        $this->coverageName = $coverageName;
         return $this;
     }
 
-    public function getLimit(): int
+    public function getCoverageDescription(): string
     {
-        return $this->limit;
+        return $this->coverageDescription;
     }
 
-    /**
-     * Set the value of limit
-     * @param int $limit
-     * @return self
-     */
-    public function setLimit(int $limit): self
+    public function setCoverageDescription(string $coverageDescription): self
     {
-        $this->limit = $limit;
+        $this->coverageDescription = $coverageDescription;
         return $this;
     }
 
-    public function getDeductible(): int
+    public function getDeleted(): bool
     {
-        return $this->deductible;
+        return $this->deleted;
     }
 
-    /**
-     * Set the value of deductible
-     * @param int $deductible
-     * @return self
-     */
-    public function setDeductible(string $deductible): self
+    public function setDeleted(bool $deleted): self
     {
-        $this->deductible = $deductible;
+        $this->deleted = $deleted;
         return $this;
-    }
-    public function getPolicyNo(): int
-    {
-        return $this->policyNo;
     }
 
-    /**
-     * Set the value of coverageID
-     * @param int $coverageID
-     * @return self
-     */
-    public function setPolicyNo(int $policyNo): self
-    {
-        $this->policyNo = $policyNo;
-        return $this;
-    }
-  
     public function save(): bool
     {
-        if ($this->coverageId == 0) {
-            return $this->saveCoverage();
-        } else {
-            return $this->updateCoverage();
+        if ($this->coverageId == 0)
+        {
+            return $this->create();
+        }
+        else
+        {
+            return $this->update();
         }
     }
 
-    /**
-     * Insert the bank
-     * @return bool
-     */
-    private function saveCoverage(): bool
+    private function create(): bool
     {
         $con = new \MysqlClass();
-        $query = "INSERT INTO coverage (type, limit, deductible) VALUES (?, ?, ?);";
-        $con->pushParam($this->type);
-        $con->pushParam($this->limit);
-        $con->pushParam($this->deductible);
+        $query = "INSERT INTO coverage (CoverageName, CoverageDescription, Deleted) 
+        VALUES (?, ?, ?)";
 
-        if ($con->executeNoneQuery($query) > 0) {
-            $this->coverageID = $con->getLastInsertId();
+        $con->pushParam($this->coverageName);
+        $con->pushParam($this->coverageDescription);
+        $con->pushParam((int) $this->deleted);
+
+        if ($con->executeNoneQuery($query) > 0)
+        {
+            $this->coverageId = $con->getLastInsertId();
             return true;
         }
 
         return false;
     }
 
-    /**
-     * Update the coverage
-     * @return bool
-     */
-    private function updateCoverage(): bool
+    private function update(): bool
     {
         $con = new \MysqlClass();
-        $query = "UPDATE coverage SET type = ?, limit = ?, deductible = ? WHERE coverageID = ? AND Deleted = 0";
-        $con->pushParam($this->type);
-        $con->pushParam($this->limit);
-        $con->pushParam($this->deductible);
+        $query = "UPDATE coverage SET CoverageName = ?, CoverageDescription = ?, Deleted = ? WHERE CoverageId = ?";
+
+        $con->pushParam($this->coverageName);
+        $con->pushParam($this->coverageDescription);
+        $con->pushParam((int) $this->deleted);
         $con->pushParam($this->coverageId);
 
         return $con->executeNoneQuery($query) > 0;
     }
 
-    /**
-     * Delete the coverage
-     * @param int $coverageIDID
-     * @return bool
-     */
-    public static function delete(int $coverageID): bool
+    public static function delete(int $coverageId): bool
     {
         $con = new \MysqlClass();
-        $query = "UPDATE coverage SET Deleted = 1 WHERE coverageID = ?";
-        $con->pushParam($coverageID);
+        $query = "UPDATE coverage SET Deleted = 1 WHERE CoverageId = ? AND Deleted = 0";
+        $con->pushParam($coverageId);
 
         return $con->executeNoneQuery($query) > 0;
     }
 
-    /**
-     * Get the coverage by coverageIDID
-     * @param int $coverageIDID
-     * @return coverage|null
-     */
-    public static function getCoverageByCoverageId(int $coverageID): ?Coverage
+    public static function getByCoverageId(int $coverageId): ?self
     {
         $con = new \MysqlClass();
-        $query = "SELECT * FROM coverage WHERE coverageID = ? AND Deleted = 0 LIMIT 1";
-        $con->pushParam($coverageID);
+        $query = "SELECT * FROM coverage WHERE CoverageId = ? AND Deleted = 0 LIMIT 1";
+        $con->pushParam($coverageId);
+
         $result = $con->queryObject($query);
 
-        if ($result) {
+        if ($result)
+        {
             return self::map($result);
         }
 
         return null;
     }
 
-    /**
-     * Get all coverages
-     * @return array
-     */
     public static function getAll(): array
     {
         $con = new \MysqlClass();
         $query = "SELECT * FROM coverage WHERE Deleted = 0";
-        $result = [];
 
-        $Coverages = $con->queryAllObject($query);
+        $result = $con->queryAllObject($query);
 
-        if ($Coverages) {
-            foreach ($Coverages as $row) {
-                $result[] = self::map($row);
-            }
+        $coverages = [];
+        foreach ($result as $coverage)
+        {
+            $coverages[] = self::map($coverage);
         }
 
-        return $result;
+        return $coverages;
     }
 
-    /**
-     * Get the bank display values
-     * @return array
-     */
-    public static function getDisplay(): array
-    {
-        $Coverages = self::getAll();
-        $result = [];
-
-        foreach ($Coverages as $Coverage) {
-            $result[] = ["coverageID" => $Coverage->getcoverageID(), "name" => $Coverage->gettype()];
-        }
-
-        return $result;
-    }
-
-    private static function map($data): Coverage
+    private static function map($coverage): self
     {
         return (new self())
-            ->setcoverageID($data->coverageID)
-            ->settype($data->type)
-            ->setlimit($data->limit)
-            ->setdeductible($data->deductible);
+            ->setCoverageId($coverage->CoverageId)
+            ->setCoverageName($coverage->CoverageName)
+            ->setCoverageDescription($coverage->CoverageDescription)
+            ->setDeleted((bool) $coverage->Deleted);
     }
+
+
+
+    public static function getByCoverageIdAsJson(int $coverageId): ?object
+    {
+        $con = new \MysqlClass();
+        $query = "SELECT * FROM coverage WHERE coverageId = ? AND Deleted = 0 LIMIT 1";
+        $con->pushParam($coverageId);
+
+        $result = $con->queryObject($query);
+        $coverage = null;
+
+        if ($result)
+        {
+            $coverage = new \stdClass();
+            $coverage->coverageId = $result->CoverageId;
+            $coverage->coverageName = $result->CoverageName;
+            $coverage->coverageDescription = $result->CoverageDescription;
+        }
+
+        return $coverage;
+    }
+
+    public static function getAllAsJson(): array
+    {
+        $con = new \MysqlClass();
+        $query = "SELECT * FROM coverage WHERE Deleted = 0";
+
+        $results = $con->queryAllObject($query);
+
+        $coverages = [];
+        foreach ($results as $result)
+        {
+            $coverage = new \stdClass();
+            $coverage->coverageId = $result->CoverageId;
+            $coverage->coverageName = $result->CoverageName;
+            $coverage->coverageDescription = $result->CoverageDescription;
+
+            $coverages[] = $coverage;
+        }
+
+        return $coverages;
+
+    }
+
+
+    public static function mapFromRequest($request): ?self
+    {
+        $coverage = new self();
+
+        if (\ValidationClass::ValidateFullNumber($request->coverageId))
+        {
+            $coverage->setCoverageId((int) $request->coverageId);
+        }
+
+        if (!\ValidationClass::ValidateAlphaNumeric($request->coverageName))
+        {
+            return null;
+        }
+        else
+        {
+            $coverage->setCoverageName($request->coverageName);
+        }
+
+        if (!empty($request->coverageDescription) && !\ValidationClass::ValidateAlphaNumeric($request->coverageDescription))
+        {
+            return null;
+        }
+        else
+        {
+            $coverage->setCoverageDescription($request->coverageDescription);
+        }
+
+        return $coverage;
+    }
+
 }

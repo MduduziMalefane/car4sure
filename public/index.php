@@ -1,7 +1,5 @@
 <?php
 
-use TLC\Application\Model\Member;
-
 chdir(dirname(__DIR__));
 
 // Set Server PHP Date

@@ -1,28 +1,24 @@
 <?php
 
-namespace CAR4SURE\Application\Model;
+namespace Care4Sure\Application\Model;
 
-/**
- * Policyholder Model
- */
 class Policy
 {
     private int $policyNo;
-    private string $policyStatus;
+    private string $policyName;
+    private string $policyDescription;
     private string $policyType;
-    private \DateTime $policyEffectiveDate;
-    private \DateTime $policyExpirationDate;
-    private int $policyholderID;
-    private int $deleted;
-  
+    private float $policyCost;
+    private bool $deleted;
 
     public function __construct()
     {
         $this->policyNo = 0;
-        $this->policyStatus = '';
-        $this->policyEffectiveDate = new \DateTime(); // Initialize to the current date and time
-        $this->policyExpirationDate = new \DateTime();
-        $this->policyholderID = 0;
+        $this->policyName = '';
+        $this->policyDescription = '';
+        $this->policyType = 'Auto';
+        $this->policyCost = 0.00;
+        $this->deleted = false;
     }
 
     public function getPolicyNo(): int
@@ -36,59 +32,87 @@ class Policy
         return $this;
     }
 
-    public function getPolicyStatus(): string
+    public function getPolicyName(): string
     {
-        return $this->policyNo;
+        return $this->policyName;
     }
 
-    public function setPolicyStatus(string $policyStatus): self
+    public function setPolicyName(string $policyName): self
     {
-        $this->policyStatus = $policyStatus;
+        $this->policyName = $policyName;
         return $this;
-    }
-    public function getPolicyEffectiveDate(): \DateTime
-    {
-        return $this->policyEffectiveDate;
     }
 
-    public function setPolicyEffectiveDate(\DateTime $policyEffectiveDate): self
+    public function getPolicyDescription(): string
     {
-        $this->policyEffectiveDate = $policyEffectiveDate;
-        return $this;
-    }
-    public function getPolicyExpirationDate(): \DateTime
-    {
-        return $this->policyExpirationDate;
+        return $this->policyDescription;
     }
 
-    public function setPolicyExpirationDate(\DateTime $policyExpirationDate): self
+    public function setPolicyDescription(string $policyDescription): self
     {
-        $this->policyExpirationDate = $policyExpirationDate;
+        $this->policyDescription = $policyDescription;
         return $this;
     }
+
+    public function getPolicyType(): string
+    {
+        return $this->policyType;
+    }
+
+    public function setPolicyType(string $policyType): self
+    {
+        $this->policyType = $policyType;
+        return $this;
+    }
+
+    public function getPolicyCost(): float
+    {
+        return $this->policyCost;
+    }
+
+    public function setPolicyCost(float $policyCost): self
+    {
+        $this->policyCost = $policyCost;
+        return $this;
+    }
+
+    public function isDeleted(): bool
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted(bool $deleted): self
+    {
+        $this->deleted = $deleted;
+        return $this;
+    }
+
     public function save(): bool
     {
-        if ($this->policyNo == 0) {
-            return $this->savePolicy();
-        } else {
-            return $this->updatePolicy();
+        if ($this->policyNo == 0)
+        {
+            return $this->create();
+        }
+        else
+        {
+            return $this->update();
         }
     }
 
-    /**
-     * Insert the policy
-     * @return bool
-     */
-    private function savePolicy(): bool
+    private function create(): bool
     {
         $con = new \MysqlClass();
-        $query = "INSERT INTO policy (policyStatus, policyEffectiveDate, policyExpirationDate ) VALUES (?, ?, ?);";
-        $con->pushParam($this->policyStatus);
-        $con->pushParam($this->policyEffectiveDate->format('Y-m-d H:i:s'));
-        $con->pushParam($this->policyExpirationDate->format('Y-m-d H:i:s'));
+        $query = "INSERT INTO policy (PolicyName, PolicyDescription, PolicyType, PolicyCost, Deleted) 
+                  VALUES (?, ?, ?, ?, ?)";
 
+        $con->pushParam($this->policyName);
+        $con->pushParam($this->policyDescription);
+        $con->pushParam($this->policyType);
+        $con->pushParam($this->policyCost);
+        $con->pushParam((int) $this->deleted);
 
-        if ($con->executeNoneQuery($query) > 0) {
+        if ($con->executeNoneQuery($query) > 0)
+        {
             $this->policyNo = $con->getLastInsertId();
             return true;
         }
@@ -96,117 +120,167 @@ class Policy
         return false;
     }
 
-    /**
-     * Update the policy
-     * @return bool
-     */
-    private function updatePolicy(): bool
+    private function update(): bool
     {
         $con = new \MysqlClass();
-        $query = "UPDATE policy SET policyStatus = ?, policyEffectiveDate = ?, policyExpirationDate = ?, WHERE policyNo = ? AND Deleted = 0";
-        $con->pushParam($this->policyStatus);
-        $con->pushParam($this->policyEffectiveDate->format('Y-m-d H:i:s'));
-        $con->pushParam($this->policyExpirationDate->format('Y-m-d H:i:s'));
+        $query = "UPDATE policy SET PolicyName = ?, PolicyDescription = ?, PolicyType = ?, PolicyCost = ?, Deleted = ? 
+                  WHERE PolicyNo = ?";
+
+        $con->pushParam($this->policyName);
+        $con->pushParam($this->policyDescription);
+        $con->pushParam($this->policyType);
+        $con->pushParam($this->policyCost);
+        $con->pushParam((int) $this->deleted);
         $con->pushParam($this->policyNo);
 
         return $con->executeNoneQuery($query) > 0;
     }
 
-    /**
-     * Delete the policy
-     * @param int $policyNo
-     * @return bool
-     */
     public static function delete(int $policyNo): bool
     {
         $con = new \MysqlClass();
-        $query = "UPDATE policy SET Deleted = 1 WHERE policyNo = ?";
+        $query = "UPDATE policy SET Deleted = 1 WHERE PolicyNo = ? AND Deleted = 0";
         $con->pushParam($policyNo);
 
         return $con->executeNoneQuery($query) > 0;
     }
 
-    /**
-     * Get the policy by policyNo
-     * @param int $policyNo
-     * @return policy|null
-     */
-    public static function getPolicyByPolicyNo(int $policyNo): ?policy
+    public static function getByPolicyNo(int $policyNo): ?self
     {
         $con = new \MysqlClass();
-        $query = "SELECT * FROM policy WHERE Id = ? AND Deleted = 0 LIMIT 1";
+        $query = "SELECT * FROM policy WHERE PolicyNo = ? AND Deleted = 0 LIMIT 1";
         $con->pushParam($policyNo);
+
         $result = $con->queryObject($query);
 
-        if ($result) {
+        if ($result)
+        {
             return self::map($result);
         }
 
         return null;
     }
 
-    /**
-     * Get all policies
-     * @return array
-     */
     public static function getAll(): array
     {
         $con = new \MysqlClass();
         $query = "SELECT * FROM policy WHERE Deleted = 0";
-        $result = [];
 
-        $Policies = $con->queryAllObject($query);
+        $result = $con->queryAllObject($query);
 
-        if ($Policies) {
-            foreach ($Policies as $row) {
-                $result[] = self::map($row);
-            }
+        $policies = [];
+        foreach ($result as $policy)
+        {
+            $policies[] = self::map($policy);
         }
 
-        return $result;
+        return $policies;
     }
 
-    /**
-     * Get the bank display values
-     * @return array
-     */
-    public static function getDisplay(): array
-    {
-        $policies = self::getAll();
-        $result = [];
-
-        foreach ($policies as $policy) {
-            $result[] = ["policyNo" => $policy->getpolicyNo(), "name" => $policy->getpolicyStatus()];
-        }
-
-        return $result;
-    }
-
-    public static function getByPolicyHolderId(int $policyholderID){
-        $con = new \MysqlClass();
-        $query = "SELECT * FROM policyholder WHERE policyHolderID = ? AND Deleted = 0 LIMIT 1";
-        $con->pushParam($policyholderID);
-        $result = $con->queryObject($query);
-
-        if ($result) {
-            return self::map($result);
-        }
-
-        return null;
-    
-    
-    }
-
-
-
-
-    private static function map($Policy): Policy
+    private static function map($policy): self
     {
         return (new self())
-            ->setPolicyNo($Policy->PolicyNo)
-            ->setPolicyStatus($Policy->firstName)
-            ->setPolicyEffectiveDate($Policy->lastName)
-            ->setPolicyExpirationDate($Policy->streetName);
-          
+            ->setPolicyNo($policy->PolicyNo)
+            ->setPolicyName($policy->PolicyName)
+            ->setPolicyDescription($policy->PolicyDescription)
+            ->setPolicyType($policy->PolicyType)
+            ->setPolicyCost($policy->PolicyCost)
+            ->setDeleted((bool) $policy->Deleted);
+    }
+
+
+    public static function getByPolicyNoAsJson(int $policyNo): ?object
+    {
+        $con = new \MysqlClass();
+        $query = "SELECT * FROM policy WHERE PolicyNo = ? AND Deleted = 0 LIMIT 1";
+        $con->pushParam($policyNo);
+
+        $result = $con->queryObject($query);
+        $policy = null;
+
+        if ($result)
+        {
+            $policy = new \stdClass();
+            $policy->policyNo = $result->PolicyNo;
+            $policy->policyName = $result->PolicyName;
+            $policy->policyDescription = $result->PolicyDescription;
+            $policy->policyType = $result->PolicyType;
+            $policy->policyCost = $result->PolicyCost;
+        }
+
+        return $policy;
+    }
+
+    public static function getAllAsJson(): array
+    {
+        $con = new \MysqlClass();
+        $query = "SELECT * FROM policy WHERE Deleted = 0";
+
+        $results = $con->queryAllObject($query);
+
+        $policies = [];
+        foreach ($results as $result)
+        {
+            $policy = new \stdClass();
+            $policy->policyNo = $result->PolicyNo;
+            $policy->policyName = $result->PolicyName;
+            $policy->policyDescription = $result->PolicyDescription;
+            $policy->policyType = $result->PolicyType;
+            $policy->policyCost = $result->PolicyCost;
+
+            $policies[] = $policy;
+        }
+
+        return $policies;
+    }
+
+
+    public static function mapFromRequest($request): ?self
+    {
+        $policy = new self();
+
+        if (\ValidationClass::ValidateFullNumber($request->policyNo))
+        {
+            $policy->setPolicyNo((int) $request->policyNo);
+        }
+
+        if (!\ValidationClass::ValidateAlphaNumeric($request->policyName))
+        {
+            return null;
+        }
+        else
+        {
+            $policy->setPolicyName($request->policyName);
+        }
+
+        if (!\ValidationClass::ValidateAlphaNumeric($request->policyDescription))
+        {
+            return null;
+        }
+        else
+        {
+            $policy->setPolicyDescription($request->policyDescription);
+        }
+
+        if (!\ValidationClass::ValidateAlphaNumeric($request->policyType))
+        {
+            return null;
+        }
+        else
+        {
+            $policy->setPolicyType($request->policyType);
+        }
+
+        if (!\ValidationClass::ValidateDecimal($request->policyCost))
+        {
+            return null;
+        }
+        else
+        {
+            $policy->setPolicyCost((float) $request->policyCost);
+        }
+
+
+        return $policy;
     }
 }

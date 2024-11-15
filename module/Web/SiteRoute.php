@@ -95,6 +95,13 @@ class SiteRoute
         }
     }
 
+    public static function renderJson($data)
+    {
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }   
+   
+
     /**
      * Add a context to our view
      * @param string $key

@@ -10,7 +10,7 @@
             "request": "launch",
             "runtimeArgs": [
                 "-S",
-                "tma.local:8000",
+                "car4sure.local:8000",
                 "-t",
                 "${workspaceFolder}/public"
             ],
@@ -25,7 +25,7 @@
             "request": "launch",
             "runtimeArgs": [
                 "-S",
-                "tma.local:8000",
+                "car4sure.local:8000",
                 "-t",
                 "${workspaceFolder}/public"
             ],

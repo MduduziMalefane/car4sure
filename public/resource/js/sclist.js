@@ -32,11 +32,11 @@ class scLister
                 <input
                     class='w3-input w3-border w3-border-blue midinput w3-inline-block w3-margin-bottom searchinput'
                     id='${this.id}_searchText' placeholder="Search" />
-                <button class='w3-button neca-green w3-round-medium fa w3-large fa-search searchinput'
+                <button class='w3-button car4sure-green w3-round-medium fa w3-large fa-search searchinput'
                         title='Search' id='${this.id}_scSearchButton'></button>
-                <button class='w3-button neca-green w3-round-medium fa fa w3-large fa-window-close searchinput'
+                <button class='w3-button car4sure-green w3-round-medium fa fa w3-large fa-window-close searchinput'
                         title='Clear Search' id='${this.id}_scCloseSearchButton'></button>
-                <button class="w3-button neca-green w3-round-medium fa fa-sync-alt w3-large refreshclick"
+                <button class="w3-button car4sure-green w3-round-medium fa fa-sync-alt w3-large refreshclick"
                         title="refresh" id="${this.id}_scRefreshButton"></button>
             </div>
 

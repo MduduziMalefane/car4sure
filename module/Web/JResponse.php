@@ -4,13 +4,11 @@ class JResponse extends JObject
 {
 
     public int $status; // True(1) / False(0)
-    public int $code; // to be removed soon
     public string $message; // Display Message
     public mixed $data;
 
     public function __construct(int $status = 0, string $message = "")
     {
-        $this->code = 1;
         $this->status = $status;
         $this->message = $message;
         $this->data = null;
@@ -18,7 +16,6 @@ class JResponse extends JObject
 
     public function SetErrorMessage(string $Message)
     {
-        $this->code = 1;
         $this->status = 0;
         $this->message = $Message;
         $this->data = null;
@@ -28,6 +25,16 @@ class JResponse extends JObject
     {
         $res = new JResponse();
         $res->SetErrorMessage($Message);
+        $res->toJsonResponse();
+        unset($res);
+    }
+
+    public static function toSuccessJsonResponse(string $message, mixed $Data = null)
+    {
+        $res = new JResponse();
+        $res->status = 1;
+        $res->message = $message;
+        $res->data = $Data;
         $res->toJsonResponse();
         unset($res);
     }

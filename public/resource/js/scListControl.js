@@ -1,7 +1,7 @@
 class scListControl
 {
 
-    constructor(id, tableStyle = 'table table-bordered', headerStyle = 'neca-table-header', listStyle = "w3-row w3-border w3-padding", customSearch = '')
+    constructor(id, tableStyle = 'table table-bordered', headerStyle = 'car4sure-table-header', listStyle = "w3-row w3-border w3-padding", customSearch = '')
     {
         this.id = id;
         let scParent = $(`#${this.id}`);
@@ -56,15 +56,15 @@ class scListControl
                 
                 <input type="search"  id='${this.id}_searchText' class="form-control w3-border w3-border-indigo" />
 
-                <button class="btn neca-green w3-hover-gray" type="button" id='${this.id}_scSearchButton' title="Search">
+                <button class="btn car4sure-green w3-hover-gray" type="button" id='${this.id}_scSearchButton' title="Search">
                   <i class="fas fa-search"></i>
                 </button>
             
-                <button class="btn neca-green w3-hover-gray" title='Clear Search' id='${this.id}_scCloseSearchButton'>
+                <button class="btn car4sure-green w3-hover-gray" title='Clear Search' id='${this.id}_scCloseSearchButton'>
                     <i class="fa fa-window-close"></i>
                 </button>
             
-                <button class="btn neca-green w3-hover-gray" title="refresh" id="${this.id}_scRefreshButton">
+                <button class="btn car4sure-green w3-hover-gray" title="refresh" id="${this.id}_scRefreshButton">
                     <i class="fa fa-sync-alt"></i>
                 </button>
             
@@ -81,8 +81,8 @@ class scListControl
        
         <div id='${this.id}_scHeader' class="w3-row sc-header" style='display:none'>
             <div class="pb-2">
-                <button id="${this.id}_switchGrid" class='btn neca-green w3-hover-gray'><i class="fas fa-border-all"></i></button>
-                <button id="${this.id}_switchTile" class='btn neca-green w3-hover-gray'><i class="fas fa-th-large"></i></button>
+                <button id="${this.id}_switchGrid" class='btn car4sure-green w3-hover-gray'><i class="fas fa-border-all"></i></button>
+                <button id="${this.id}_switchTile" class='btn car4sure-green w3-hover-gray'><i class="fas fa-th-large"></i></button>
             </div>
             <div class="w3-half">
                 ${searchView}

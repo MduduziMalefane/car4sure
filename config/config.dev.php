@@ -29,11 +29,11 @@ global $BASEPATH;
 $config->DBServer = 'localhost';
 $config->DBUser = 'root';
 $config->DBPass = '';
-$config->DBName = 'insurance_1';
+$config->DBName = 'car4sure';
 
 // Url Config
 $BASEPATH = "";
-$SITEURL = "http://car4sure.local" . $BASEPATH . "/";
+$SITEURL = "http://car4sure.local:80" . $BASEPATH . "/";
 $config->SITEURL = $SITEURL;
 
 // File Location

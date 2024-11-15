@@ -4,41 +4,12 @@
 	Care4Sure Employee
 {% endblock %}
 
-{% block header %}
-	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-		<a class="navbar-brand" href="/">Car4Sure</a>
-		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-		<div class="collapse navbar-collapse" id="navbarNav">
-			<ul class="navbar-nav ml-auto">
-				<li class="nav-item active">
-					<a class="nav-link" href="#" class="viewHomeButton">Home</a>
-
-				</li>
-				<li class="nav-item">
-					<a class="nav-link viewCustomersButton" href="#">Customers</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link viewCoveragesButton" href="#">Coverage</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link viewPoliciesButton" href="#">Policy</a>
-				</li>
-
-			</ul>
-		</div>
-	</nav>
-
-{% endblock %}
-
-
 {% block additional_head %}
 	<script src="/resource/js/app.js"></script>
 {% endblock %}
 
 {% block content %}
-	<h2>Welcome to your Car4Sure Dashboard</h2>
+<h2>Welcome to your Car4Sure Dashboard</h2>
 	<div class='app-view' id="homeView">
 		<div>
 
@@ -58,10 +29,10 @@
 
 		<div>
 			<button class="btn btn-primary addCustomerButton">Add Customer</button>
-			<button class="btn btn-primary refreshCustomersButton">Refresh</button>
-		 <button class="print-btn" onclick="printPage()">Save Page as PDF</button>
 		</div>
-
+		<div>
+		<button onclick="printPage()">Save Page as PDF</button>
+        </div>
 		<div>
 			<table class="table table-striped">
 				<thead>
@@ -182,7 +153,7 @@
 				<label for="licenseClass">License Class</label>
 				<input type="text" class="form-control" id="licenseClass" name="licenseClass" required>
 			</div>
-
+            <button onclick="printPage()">Save Page as PDF</button>
 			<button type="button" class="btn btn-primary saveCustomerButton">Save</button>
 			<button type="button" class="btn btn-secondary customerCancelButton">Cancel</button>
 		</div>
@@ -196,8 +167,6 @@
 
 		<div>
 			<button class="btn btn-primary addCoverageButton">Add Coverage</button>
-			<button class="btn btn-primary refreshCoveragesButton">Refresh</button>
-		 <button class="print-btn" onclick="printPage()">Save Page as PDF</button>
 		</div>
 
 		<div>
@@ -222,11 +191,16 @@
 
 			<div class="form-group">
 				<label for="maritalStatus">Coverage Name</label>
-				<input type="text" class="form-control" id="coverageName" name="coverageName" required>
+				<select class="form-control" id="coverageName" name="coverageName" required>
+					<option value="Liability">Liability</option>
+					<option value="Collision">Collision</option>
+					<option value="Comprehensive">Comprehensive</option>
+					<option value="Medical">Medical</option>
+				</select>
 			</div>
 			<div class="form-group">
 				<label for="street">Description</label>
-				<input type="text" class="form-control" id="coverageDescription" name="coverageDescription" required>
+				<input type="text" class="form-control" id="description" name="description" required>
 			</div>
 
 			<button type="button" class="btn btn-primary saveCoverageButton">Save</button>
@@ -242,8 +216,6 @@
 
 		<div>
 			<button class="btn btn-primary addPolicyButton">Add Policy</button>
-			<button class="btn btn-primary refreshPoliciesButton">Refresh</button>
-		 <button class="print-btn" onclick="printPage()">Save Page as PDF</button>
 		</div>
 
 		<div>
@@ -266,24 +238,32 @@
 		<h2 id="policyViewTitle">Add/Edit Customer</h2>
 
 		<div id="policyForm">
-			<input type="hidden" id="policyNo" name="policyNo" value="">
+			<input type="hidden" id="policyId" name="policyId" value="">
 
 			<div class="form-group">
 				<label for="policyName">Policy Name</label>
-				<input type="text" class="form-control" id="policyName" name="policyName" required>
+				<select class="form-control" id="policyName" name="policyName" required>
+					<option value="Liability">Auto Insurance</option>
+					<option value="Collision">Motorcycle </option>
+					<option value="Comprehensive">Boat Insurance</option>
+				</select>
 			</div>
 			<div class="form-group">
-				<label for="street">Policy Description</label>
-				<input type="text" class="form-control" id="policyDescription" name="policyDescription" required>
+				<label for="description">Policy Description</label>
+				<input type="text" class="form-control" id="description" name="description" required>
 			</div>
-			<div class="form-group">
+		    <div class="form-group">
 				<label for="policyType">Policy Type</label>
-				<input type="text" class="form-control" id="policyType" name="policyType" required>
+				<select class="form-control" id="policyType" name="policyType" required>
+							<option value="Liability">Auto Insurance</option>
+							<option value="Collision">Motorcycle </option>
+							<option value="Comprehensive">Boat Insurance</option>
+				</select>
 			</div>
 
 			<div class="form-group">
 				<label for="policyCost">Policy Cost</label>
-				<input type="number" class="form-control" id="policyCost" name="policyCost" required>
+				<input type="text" class="form-control" id="policyCost" name="policyCost" required>
 			</div>
 			<button type="button" class="btn btn-primary savePolicyButton">Save</button>
 			<button type="button" class="btn btn-secondary policyCancelButton">Cancel</button>
@@ -291,6 +271,7 @@
 
 
 	</div>
+
 
 <script>
         function printPage() {
@@ -303,13 +284,12 @@
 
 
 	<script>
-
-		$('.viewHomeButton').click(function () {
-showView('homeView');
-});
-
-customerView.init();
-coverageView.init();
-policyView.init();
+		customerView.init();
+	</script>
+	<script>	
+	    coverageView.init();
+	</script>
+	<script>	
+		policyView.init();
 	</script>
 {% endblock %}
